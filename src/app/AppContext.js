@@ -1,7 +1,9 @@
 import React from "react";
 
-function useApp() {
-    const [section, setSection] = React.useState('Productos Escasos');
+const AppContext = React.createContext();
+
+function AppProvider(props) {
+    const [currentSection, setCurrentSection] = React.useState('Productos escasos');
     const [searchValue, setSearchValue] = React.useState('');
     const [rows, setRows] = React.useState([]);
 
@@ -18,22 +20,26 @@ function useApp() {
             if (rowName.includes(searchedText) || rowIngredients.includes(searchedText)  ){
                 return value
             }
-            // console.log(value.ingredients)
+            
             
         })
     } else {
         searchedValues = rows
     }
 
-    return({ 
-        section,
-        setSection,
+    return(
+        <AppContext.Provider value={{ 
+        currentSection,
+        setCurrentSection,
         searchValue, 
         setSearchValue,
         rows,
         setRows,
         searchedValues
-    })
+        }}>
+            {props.children}
+        </AppContext.Provider>
+    )
 }
 
-export default useApp;
+export { AppProvider, AppContext };

@@ -1,13 +1,28 @@
 import React from "react"
+import { AppContext } from "../app/AppContext"
 import Button from "./Button"
 import Input from "./Input"
+import Products from "./Products"
 
 
-function Content({ children, searchValue, setSearchValue }) {
+function Content() {
+    const { searchValue, setSearchValue } = React.useContext(AppContext)
+
+    const rowContents = 
+        {
+            Products: [ 
+                'Producto',
+                'Stock',
+                'Caducidad',
+                'Precio',
+                'Laboratorio'
+            ],
+
+        }
     const onSearchValueChange = (event) =>{
         setSearchValue(event.target.value)
     }
-
+    
     return(
         <React.Fragment>
             <Input 
@@ -16,21 +31,18 @@ function Content({ children, searchValue, setSearchValue }) {
                 width = 'w-3/4'
                 margin= 'mb-10'
             />
-            <Button 
-                section = 'Productos' //se deberia cambiar por la seccion 
-            />
+            <Button />
             <table className=" w-full border border-slate-300">
                 <thead>
                     <tr className='h-14'>
-                    <th>Producto</th>
-                    <th>Stock</th>
-                    <th>Caducidad</th>
-                    <th>Precio</th>
-                    <th>Laboratorio</th>
+                        {/* We iterate the array depends on which section we are */}
+                        {rowContents.Products.map(column => (
+                            <th>{column}</th>
+                        ))}
                     </tr>
                 </thead>
                 <tbody>
-                    { children }
+                    <Products />
                 </tbody>
             </table>
         </React.Fragment>

@@ -1,7 +1,10 @@
 import Row from './Row';
 import React from "react";
+import { AppContext } from '../app/AppContext';
 
-function Products({ rows, setRows }) {
+function Products() {
+    const { searchedValues, setRows } = React.useContext(AppContext);
+
     let row = 1;
 
 
@@ -16,7 +19,7 @@ function Products({ rows, setRows }) {
 
     return (
         <React.Fragment>
-            { rows.map(product => (
+            { searchedValues.map(product => (
                 <Row
                     key= { product.id }
                     row = { row++ }
