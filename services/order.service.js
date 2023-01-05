@@ -52,7 +52,8 @@ class OrderService {
     async getOrders() {
         const orders = await models.Order.findAll({
             order: [['orderArrive', 'DESC']],
-            include: ['provider']
+            include: ['provider'],
+            raw: true
         });
         return orders
     }

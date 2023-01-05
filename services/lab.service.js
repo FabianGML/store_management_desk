@@ -11,14 +11,15 @@ class LabService {
     Se tendra que incluir los proveedores que maneja este laboratorio, y quizas cuantos productos de 
     ese laboratorio hay 
      */
-    async find() {
+    async getAllLabs() {
         const labs = await models.Lab.findAll({
-            order: sequelize.col('name')
+            order: sequelize.col('name'),
+            raw:true
         })
         return labs
     }
 
-    async findOne(id) {
+    async getOneLab(id) {
         const lab = await models.Lab.findByPk(id, {
             include: ['products']
         });
@@ -28,7 +29,7 @@ class LabService {
         return lab; // Se le agregara los proveedores y productos
     }
 
-    async create(data) {
+    async createLab(data) {
         let name = data.name;
         name = name[0].toUpperCase() + name.substring(1).toLowerCase();
         const newLab = await models.Lab.create({
@@ -39,7 +40,7 @@ class LabService {
         }
     }
 
-    async update(id, data) {
+    async updateLab(id, data) {
         const lab = await this.findOne(id);
         let name = data.name;
         name = name[0].toUpperCase() + name.substring(1).toLowerCase();
@@ -50,7 +51,7 @@ class LabService {
         }
     }
 
-    async delete(id) {
+    async deleteLab(id) {
         const lab = await this.findOne(id);
         await lab.destroy();
         return {

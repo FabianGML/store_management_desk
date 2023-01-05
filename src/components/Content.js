@@ -2,26 +2,16 @@ import React from "react"
 import { AppContext } from "../app/AppContext"
 import Button from "./Button"
 import Input from "./Input"
-import Products from "./Products"
-
+import Data from "./Data"
+import getRowContents from "../helpers/rowContents"
 
 function Content() {
-    const { searchValue, setSearchValue } = React.useContext(AppContext)
-
-    const rowContents = 
-        {
-            Products: [ 
-                'Producto',
-                'Stock',
-                'Caducidad',
-                'Precio',
-                'Laboratorio'
-            ],
-
-        }
+    const { searchValue, setSearchValue, currentSection } = React.useContext(AppContext)
+    
     const onSearchValueChange = (event) =>{
         setSearchValue(event.target.value)
     }
+    const rowContents = getRowContents(currentSection)[0]
     
     return(
         <React.Fragment>
@@ -36,13 +26,13 @@ function Content() {
                 <thead>
                     <tr className='h-14'>
                         {/* We iterate the array depends on which section we are */}
-                        {rowContents.Products.map(column => (
-                            <th>{column}</th>
+                        {rowContents.map(column => (
+                            <th key={column}>{column}</th>
                         ))}
                     </tr>
                 </thead>
                 <tbody>
-                    <Products />
+                    <Data />
                 </tbody>
             </table>
         </React.Fragment>

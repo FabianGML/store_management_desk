@@ -4,6 +4,7 @@ import { AppContext } from '../app/AppContext';
 
 function Section({svg, text, path }) {
     const { setCurrentSection } = React.useContext(AppContext);
+    
     const changeSection = () => {
         //Path is the section we currently are, depends on the button we click on 
         setCurrentSection(path)

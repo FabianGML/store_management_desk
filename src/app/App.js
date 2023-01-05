@@ -15,15 +15,16 @@ function App() {
 
         <Header>
           {sections.map(section => (
-            <ul>
-              <Section key={section.text} svg={section.svg} text={section.text} path={section.text} />
+            <ul key={section.text}>
+              <Section svg={section.svg} text={section.text} path={section.text} />
             </ul>
           ))}
         </Header>
 
         <Routes>
-          <Route path='/' element={<MainContent />} />
+          <Route path='/' element={<p>Inicio</p>} />
           <Route path='/productos' element={<MainContent />} />
+          {/* <Route path='/productos' element={<MainContent />} /> */}
           <Route path='/pedidos' element={<MainContent />} />
           <Route path='/proveedores' element={<MainContent />} />
           <Route path='/laboratorios' element={<MainContent />} />
