@@ -1,5 +1,5 @@
 const { contextBridge, ipcRenderer} = require('electron');
 
-contextBridge.exposeInMainWorld('Products', {
-    products: () => ipcRenderer.invoke('products').then(result => result)
+contextBridge.exposeInMainWorld('Data', {
+    info: (section) => ipcRenderer.invoke('data', section).then(result => result)
 })

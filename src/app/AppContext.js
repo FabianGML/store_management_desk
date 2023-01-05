@@ -3,7 +3,7 @@ import React from "react";
 const AppContext = React.createContext();
 
 function AppProvider(props) {
-    const [currentSection, setCurrentSection] = React.useState('Productos escasos');
+    const [currentSection, setCurrentSection] = React.useState('Inicio');
     const [searchValue, setSearchValue] = React.useState('');
     const [rows, setRows] = React.useState([]);
 

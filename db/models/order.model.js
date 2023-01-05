@@ -46,10 +46,11 @@ class Order extends Model {
             as: 'items',
             through: models.OrderProduct,
             foreignKey : 'orderId',
-            otherKey: 'productId'
+            otherKey: 'productId',
+            raw:true
         });
 
-        this.belongsTo(models.Provider, {as: 'provider'});
+        this.belongsTo(models.Provider, {as: 'provider', raw:true});
     }
 
     static config(sequelize){
