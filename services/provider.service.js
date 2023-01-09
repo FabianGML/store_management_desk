@@ -32,7 +32,6 @@ class ProviderService {
     }
     async getProviders() {
         const rta = await models.Provider.findAll({
-            include:['labsProv'],
             raw: true
         })
         return rta 

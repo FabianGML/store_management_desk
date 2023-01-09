@@ -21,7 +21,8 @@ class Lab extends Model {
     static associate(models) {
         this.hasMany(models.Product, {
             as: 'products',
-            foreignKey: 'labId'
+            foreignKey: 'labId',
+            raw: true
         });
     }
 

@@ -13,7 +13,7 @@ function getRowContents(currentSection){
             'stock',
             'price',
             'expiration',
-            'labs.names'
+            'lab.name'
             ]
         ],
         Pedidos: [[ 
@@ -23,7 +23,7 @@ function getRowContents(currentSection){
             'Pagada',
             ],
             [
-            'provider[name]',
+            'provider.name',
             'orderArrive',
             'total',
             'isPayed'

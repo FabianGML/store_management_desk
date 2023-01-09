@@ -3,7 +3,7 @@ import React from "react";
 import { AppContext } from '../app/AppContext';
 
 function Data() {
-    const { searchedValues, rows, setRows, currentSection, setCurrentSection } = React.useContext(AppContext);
+    const { searchedValues, setSearchValue, rows, setRows, currentSection, setCurrentSection } = React.useContext(AppContext);
 
     let row = 1;
     let id = 1;
@@ -20,7 +20,7 @@ function Data() {
         console.log(rows)
         console.log(currentSection)
         
-    }, [currentSection])  
+    }, [currentSection])
 
     return (
         <React.Fragment>
