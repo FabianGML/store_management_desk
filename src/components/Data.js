@@ -3,28 +3,30 @@ import React from "react";
 import { AppContext } from '../app/AppContext';
 
 function Data() {
-    const { searchedValues, setSearchValue, rows, setRows, currentSection, setCurrentSection } = React.useContext(AppContext);
+    const { displayedInfo, setDisplayedInfo, info, setInfo, currentSection} = React.useContext(AppContext);
 
     let row = 1;
     let id = 1;
     
+    //Geting the info depends in the section we currently are 
     async function getInfo(){
         await window.Data.info(currentSection)
         .then(result => {
-            setRows(result)
+            setInfo(result)
+            setDisplayedInfo(result)
         }
         )
     }
     React.useEffect(() => {
         getInfo()
-        console.log(rows)
+        console.log(info)
         console.log(currentSection)
         
     }, [currentSection])
 
     return (
         <React.Fragment>
-            { searchedValues.map(data => (
+            { displayedInfo.map(data => (
                 <Row
                     key= { id++ }
                     row = { row++ }

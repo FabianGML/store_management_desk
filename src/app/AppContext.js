@@ -5,37 +5,19 @@ const AppContext = React.createContext();
 function AppProvider(props) {
     const [currentSection, setCurrentSection] = React.useState('Inicio');
     const [searchValue, setSearchValue] = React.useState('');
-    const [rows, setRows] = React.useState([]);
-
-    let searchedValues = [];
-
-    if (searchValue.length >= 1) {
-        searchedValues = rows.filter(value => {
-            const searchedText = searchValue.toLowerCase();
-            const rowName = value.name.toLowerCase();
-            if(value.ingredients === null){
-                value.ingredients = 'sin Ingredientes';
-            }
-            const rowIngredients = value.ingredients.toLowerCase();
-            if (rowName.includes(searchedText) || rowIngredients.includes(searchedText)  ){
-                return value
-            }
-            
-            
-        })
-    } else {
-        searchedValues = rows
-    }
-
+    const [info, setInfo] = React.useState([]);
+    const [displayedInfo, setDisplayedInfo] = React.useState([])
+    
     return(
         <AppContext.Provider value={{ 
         currentSection,
         setCurrentSection,
         searchValue, 
         setSearchValue,
-        rows,
-        setRows,
-        searchedValues
+        info,
+        setInfo,
+        displayedInfo,
+        setDisplayedInfo,
         }}>
             {props.children}
         </AppContext.Provider>

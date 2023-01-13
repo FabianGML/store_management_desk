@@ -4,13 +4,18 @@ import Button from "./Button"
 import Input from "./Input"
 import Data from "./Data"
 import getRowContents from "../helpers/rowContents"
+import displayedInfoFunction from "../helpers/displayedInfo"
 
 function Content() {
-    const { searchValue, setSearchValue, currentSection } = React.useContext(AppContext)
+    const { searchValue, info,  setSearchValue, currentSection, setDisplayedInfo, displayedInfo } = React.useContext(AppContext)
     
     const onSearchValueChange = (event) =>{
         setSearchValue(event.target.value)
     }
+    React.useEffect(() => {
+        displayedInfoFunction(searchValue, info, currentSection, setDisplayedInfo, displayedInfo)
+        console.log(searchValue)
+    }, [searchValue])
     const rowContents = getRowContents(currentSection)[0]
     
     return(

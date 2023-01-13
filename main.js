@@ -15,7 +15,6 @@ async function sendInfo(event, section) {
 
 function getInfo(section) {
   let info; 
-
   switch (section) {
     case 'Productos':
       const productService = new ProductService();
@@ -39,7 +38,7 @@ function getInfo(section) {
     default:
       break;
     }
-    return info
+  return info
 }
 
 function mainWindow() {
