@@ -35,7 +35,8 @@ function displayProducts(searchedText, rowName, value) {
         value.ingredients = 'sin Ingredientes';
     }
     const rowIngredients = value.ingredients.toLowerCase();
-    if (rowName.includes(searchedText) || rowIngredients.includes(searchedText)  ){
+    const rowLab = value['lab.name'].toLowerCase()
+    if (rowName.includes(searchedText) || rowIngredients.includes(searchedText) || rowLab.includes(searchedText) ){
         return value
     }
 }

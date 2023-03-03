@@ -3,7 +3,7 @@ import React from "react";
 import { AppContext } from '../app/AppContext';
 
 function Data() {
-    const { displayedInfo, setDisplayedInfo, info, setInfo, currentSection} = React.useContext(AppContext);
+    const { displayedInfo, setDisplayedInfo, info, setInfo, currentSection } = React.useContext(AppContext);
 
     let row = 1;
     let id = 1;
@@ -21,7 +21,6 @@ function Data() {
         getInfo()
         console.log(info)
         console.log(currentSection)
-        
     }, [currentSection])
 
     return (

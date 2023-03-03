@@ -9,8 +9,39 @@ const LabService = require('./services/lab.service');
 
 
 async function sendInfo(event, section) {
-  const info = await getInfo(section)
-  return info
+  try {
+   return await getInfo(section)
+  } catch (error) {
+    console.log(error)
+  }
+  
+}
+
+async function sendExtraInfo(event) {
+  try {
+    const labService = new LabService();
+    return await labService.getAllLabs();
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function createNewEntrance(event, data) {
+  try {
+    const productService = new ProductService();
+    const info = await productService.create(data)
+    console.log(info)
+    return info
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const sectionInfo = {
+  Productos: () => {
+    const productService = new ProductService();
+      return info = productService.getAllProducts()
+  }
 }
 
 function getInfo(section) {
@@ -41,6 +72,7 @@ function getInfo(section) {
   return info
 }
 
+
 function mainWindow() {
     const mainWin = new BrowserWindow({
         width: 1000,
@@ -55,7 +87,9 @@ function mainWindow() {
 }
 
 app.whenReady().then(() => {
-    ipcMain.handle('data', sendInfo);
+    ipcMain.handle('info', sendInfo);
+    ipcMain.handle('extraData', sendExtraInfo);
+    ipcMain.handle('sendedForm', createNewEntrance);
     mainWindow()
     app.on('activate', function () {
       if (BrowserWindow.getAllWindows().length === 0) mainWindow()

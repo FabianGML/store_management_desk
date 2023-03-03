@@ -1,6 +1,6 @@
 import React from "react";
 import { AppContext } from "../app/AppContext";
-import getRowContents from "../helpers/rowContents";
+import { getRowContents } from "../helpers/rowContents";
 
 let id = 1
 
@@ -22,7 +22,9 @@ function Row(props) {
                 } 
                 else if (column === 'isPayed' && props[column] === true) {
                     return <td key={id++} className='text-green-600'>Pagada</td>
-                } 
+                } else if (column === 'price' || column === 'total') {
+                    return <td key={id++}>${props[column]}</td>
+                }
                 return <td key={id++}>{props[column]}</td>
             } 
             )}

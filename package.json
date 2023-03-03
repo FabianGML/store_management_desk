@@ -17,7 +17,9 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.5.0",
     "react-scripts": "5.0.1",
-    "sequelize": "^6.25.6"
+    "react-select": "^5.7.0",
+    "sequelize": "^6.25.6",
+    "sequelize-cli": "^6.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -25,7 +27,11 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
-    "electron": "wait-on tcp:3000 && electronmon ."
+    "electron": "wait-on tcp:3000 && electronmon .",
+    "migrations:generate": "sequelize-cli migration:generate --name",
+    "migrations:run": "sequelize-cli db:migrate",
+    "migrations:revert": "sequelize-cli db:migrate:undo",
+    "migrations:delete": "sequelize-cli db:migrate:undo:all"
   },
   "eslintConfig": {
     "extends": [

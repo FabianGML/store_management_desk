@@ -11,8 +11,8 @@ function getRowContents(currentSection){
             [
             'name',
             'stock',
-            'price',
             'expiration',
+            'price',
             'lab.name'
             ]
         ],
@@ -53,4 +53,30 @@ function getRowContents(currentSection){
     return rowContents[currentSection]
 }
 
-export default getRowContents
+function getInputContents(section) {
+    const inputsContents = {
+        Productos: 
+        // {
+        //     Producto: 'name',
+        //     Precio: 'price',
+        //     Stock: 'stock',
+        //     Linea: 'line',
+        //     Laboratorio: 'labId',
+        //     Caducidad: 'expiration',
+        //     Descripcion: 'description'
+        // }
+        
+        [
+            ['Producto','name', 'text'],
+            ['Precio','price', 'number'],
+            ['Stock','stock', 'number'],
+            ['Linea','line',],
+            ['Ingredientes','ingredients', 'text'],
+            ['Laboratorio','labId'],
+            ['Caducidad','expiration', 'date'],
+            ['Descripcion','description'],
+        ]
+    }
+    return inputsContents[section]
+}
+export { getRowContents, getInputContents }

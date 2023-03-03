@@ -115,10 +115,17 @@ class ProviderService {
 
     /* product-provider Servide */
 
-    async getAllProductsProv(providerId) {
+    async getAllProductsByProv(providerId) {
         const products = await models.ProductProvider.findAll({ 
             where: { providerId },
             include: ['product']
+        })
+        return products
+    }
+
+    async getAllProductsProvs() {
+        const products = await models.ProductProvider.findAll({ 
+            include: ['provider']
         })
         return products
     }
