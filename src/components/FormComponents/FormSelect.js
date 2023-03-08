@@ -3,7 +3,7 @@ import { AppContext } from "../../app/AppContext"
 import Select from 'react-select'
 
 function FormSelect({name, handleChange}) {
-    const { extraData, setExtraData } = React.useContext(AppContext);
+    const { formData } = React.useContext(AppContext);
 
     function handleSelectInfo(e){
         const option = {
@@ -13,17 +13,11 @@ function FormSelect({name, handleChange}) {
     }
     
 
-    const optionsData = extraData.map(row => {return {value: row.id, label: row.name} })
+    const optionsData = formData.map(row => {return {value: row.id, label: row.name} })
     
     
     return (
-        <Select options={ optionsData } onChange={handleSelectInfo}/>
-        // <select name={name} className='w-64 h-14 mt-5'>
-        //     { extraData.map(value => (
-        //             <option value={value.id} key={value.id} onClick={ handleSelectChange }>{value.name}</option>        
-        //         ))
-        //     }
-        // </select>
+        <Select options={ optionsData } onChange={handleSelectInfo} className='pt-5'/>
     )
 }
 

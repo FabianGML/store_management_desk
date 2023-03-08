@@ -8,7 +8,7 @@ function AppProvider(props) {
   const [info, setInfo] = React.useState([]); //State to set the information from the backend
   const [displayedInfo, setDisplayedInfo] = React.useState([]); //State to set the rows wheter the user inputs a search or not
   const [form, setForm] = React.useState({}); // Set the base object to send the information to the backend
-  const [extraData, setExtraData] = React.useState([]); // Some forms need data from a model, this state helps to store this data and use it in a form
+  const [formData, setFormData] = React.useState([]); // Some forms need data from a model, this state helps to store this data and use it in a form
 
   return (
     <AppContext.Provider
@@ -23,8 +23,8 @@ function AppProvider(props) {
         setDisplayedInfo,
         form,
         setForm,
-        extraData,
-        setExtraData,
+        formData,
+        setFormData,
         }}
     >
       {props.children}

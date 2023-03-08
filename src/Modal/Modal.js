@@ -15,14 +15,12 @@ function Modal(props) {
 
   async function handleSubmit() {
     try {
-      console.log(formState)
       const response = await window.Data.sendForm(form)
       if (response.message) {
         setFormState({
           loading:false,
           response
         })
-        console.log(formState)
       }
     } catch (error) {
       console.log(error)

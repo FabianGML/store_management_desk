@@ -17,10 +17,19 @@ async function sendInfo(event, section) {
   
 }
 
-async function sendExtraInfo(event) {
+async function sendFormInfo(event) {
   try {
     const labService = new LabService();
     return await labService.getAllLabs();
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function sendExtraData(event) {
+  try {
+    const providerService = new ProviderService();
+    return await providerService.getAllProductsProvs();
   } catch (error) {
     console.log(error)
   }
@@ -88,7 +97,8 @@ function mainWindow() {
 
 app.whenReady().then(() => {
     ipcMain.handle('info', sendInfo);
-    ipcMain.handle('extraData', sendExtraInfo);
+    ipcMain.handle('formData', sendFormInfo);
+    ipcMain.handle('extraData', sendExtraData);
     ipcMain.handle('sendedForm', createNewEntrance);
     mainWindow()
     app.on('activate', function () {

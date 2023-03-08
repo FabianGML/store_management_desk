@@ -125,6 +125,7 @@ class ProviderService {
 
     async getAllProductsProvs() {
         const products = await models.ProductProvider.findAll({ 
+            raw: true,
             include: ['provider']
         })
         return products

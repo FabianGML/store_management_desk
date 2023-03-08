@@ -2,7 +2,7 @@
     Function that is used for display the information wheter the user has typed or not a search 
     depends on the section wr currently are
 */
-function displayedInfoFunction(searchValue, info, section, setDisplayedInfo, displayedInfo) {
+function displayedInfoFunction(searchValue, info, section, setDisplayedInfo) {
     if (searchValue.length > 0) {
         const searchedValues = info.filter(value => {
             const searchedText = searchValue.toLowerCase();

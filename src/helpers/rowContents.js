@@ -6,14 +6,16 @@ function getRowContents(currentSection){
             'Stock',
             'Caducidad',
             'Precio',
-            'Laboratorio'
+            'Laboratorio',
+            'Proveedores'
             ],
             [
             'name',
             'stock',
             'expiration',
             'price',
-            'lab.name'
+            'lab.name',
+            'providers'
             ]
         ],
         Pedidos: [[ 
@@ -65,17 +67,31 @@ function getInputContents(section) {
         //     Caducidad: 'expiration',
         //     Descripcion: 'description'
         // }
-        
         [
+            /* [label, name, type]
+                -label that will appear in the "label" element
+                -name that is used to send the data to the backend
+                -type of the input if need it 
+            */
             ['Producto','name', 'text'],
             ['Precio','price', 'number'],
             ['Stock','stock', 'number'],
-            ['Linea','line',],
             ['Ingredientes','ingredients', 'text'],
+            ['Imagen','image', 'file'],
             ['Laboratorio','labId'],
             ['Caducidad','expiration', 'date'],
             ['Descripcion','description'],
-        ]
+        ],
+        // Pedidos:
+        // [
+        //     ['Laboratorio','labId'],
+        //     ['Pagada','isPayed'],
+        //     ['Llegada del Pedido','orderArrive', 'date'],
+        //     ['Ingredientes','ingredients', 'text'],
+        //     ['Laboratorio','labId'],
+        //     ['Caducidad','expiration', 'date'],
+        //     ['Descripcion','description'],
+        // ],
     }
     return inputsContents[section]
 }

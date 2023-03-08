@@ -1,9 +1,10 @@
 import Row from './Row';
 import React from "react";
 import { AppContext } from '../app/AppContext';
+import LoadingSpinner from './LoadingSpinner';
 
 function Data() {
-    const { displayedInfo, setDisplayedInfo, info, setInfo, currentSection } = React.useContext(AppContext);
+    const { searchValue, displayedInfo, setDisplayedInfo, info, setInfo, currentSection} = React.useContext(AppContext);
 
     let row = 1;
     let id = 1;
@@ -17,12 +18,19 @@ function Data() {
         }
         )
     }
+
     React.useEffect(() => {
         getInfo()
         console.log(info)
         console.log(currentSection)
     }, [currentSection])
 
+    if(displayedInfo.length === 0 && searchValue.length === 0 ) {
+        return <LoadingSpinner />
+    }
+    if(displayedInfo.length === 0 && searchValue.length > 0 ){
+        return <p className='p-6 text-lg'>No hay conincidencias para "{searchValue}"</p>
+    }
     return (
         <React.Fragment>
             { displayedInfo.map(data => (

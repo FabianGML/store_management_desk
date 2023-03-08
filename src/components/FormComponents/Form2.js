@@ -9,16 +9,15 @@ import LoadingSpinner from '../LoadingSpinner'
 import NewEntrance from "./NewEntrance";
 
 function Form2({ submitInfo, formState, setFormState/*loading, setLoading */}) {
-  const { currentSection, form, setForm, setExtraData } = React.useContext(AppContext);
+  const { currentSection, form, setForm, setFormData } = React.useContext(AppContext);
   const inputContents = getInputContents(currentSection);
-  const formRef = useRef(null)
 
 
 
-  async function getExtraData(){
-    await window.Data.extraData()
+  async function getFormData(){
+    await window.Data.formData()
     .then(result => {
-        setExtraData(result)
+        setFormData(result)
     })
   }
 
@@ -38,7 +37,7 @@ function Form2({ submitInfo, formState, setFormState/*loading, setLoading */}) {
   }
   
   React.useEffect(()=> {
-    getExtraData()    
+    getFormData()    
   }, [])
 
 
@@ -47,7 +46,6 @@ function Form2({ submitInfo, formState, setFormState/*loading, setLoading */}) {
     <form
       className="p-5 w-full h-full flex flex-wrap  overflow-scroll justify-center"
       onSubmit={submitInfo}
-      ref={formRef}
     > 
       {(!formState.loading && formState.response.message  ) && <NewEntrance text={formState.response.message}/>}
       { !formState.loading && 

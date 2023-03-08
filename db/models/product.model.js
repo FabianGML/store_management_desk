@@ -25,10 +25,6 @@ const ProductSchema = {
         allowNull: false,
         defaultValue: 0
     },
-    line:{
-        allowNull: false,
-        type: DataTypes.STRING,
-    },
     ingredients: {
         allowNull: true,
         type: DataTypes.STRING,
@@ -67,6 +63,10 @@ const ProductSchema = {
             key: 'id'
         }
     },
+    image: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    }
     
 }
 

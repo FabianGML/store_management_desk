@@ -29,6 +29,10 @@ const SaleSchema = {
             model: USER_TABLE,
             key: 'id'
         }
+    },
+    discount: {
+        type: DataTypes.STRING,
+        allowNull: true,
     }
 }
 

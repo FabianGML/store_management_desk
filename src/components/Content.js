@@ -7,14 +7,14 @@ import { AppContext } from "../app/AppContext"
 import { getRowContents } from "../helpers/rowContents"
 
 function Content({setModal}) {
-    const { searchValue, info,  setSearchValue, currentSection,displayedInfo, setDisplayedInfo } = React.useContext(AppContext)
+    const { searchValue, info,  setSearchValue, currentSection, setDisplayedInfo } = React.useContext(AppContext)
     const rowContents = getRowContents(currentSection)[0]
     
     const onSearchValueChange = (event) =>{
         setSearchValue(event.target.value)
     }
     React.useEffect(() => {
-        displayedInfoFunction(searchValue, info, currentSection, setDisplayedInfo, displayedInfo)
+        displayedInfoFunction(searchValue, info, currentSection, setDisplayedInfo)
     }, [searchValue])
     
     
