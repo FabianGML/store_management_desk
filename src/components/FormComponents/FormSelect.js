@@ -17,7 +17,7 @@ function FormSelect({name, handleChange}) {
     
     
     return (
-        <Select options={ optionsData } onChange={handleSelectInfo} className='pt-5'/>
+        <Select options={ optionsData } onChange={handleSelectInfo} className='pt-5 pl-5 w-80'/>
     )
 }
 

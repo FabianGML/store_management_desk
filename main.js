@@ -7,80 +7,73 @@ const ProviderService = require('./services/provider.service');
 const LabService = require('./services/lab.service');
 
 
+const services = {
+  'Productos': {
+    'mainInfo': {service: new ProductService(), method: 'getAllProducts'},
+    'formInfo': {service: new LabService(), method: 'getAllLabs'},
+    'createProduct': {service: new ProductService(), method: 'create'}
+  },
+  'Pedidos': {
+    'mainInfo': {service: new OrderService(), method: 'getOrders'},
+    'formInfo': {service: new ProviderService(), method: 'getProviders'},
+    'createOrder': {service: new OrderService(), method: 'createOrder'}
+  },
+  'Proveedores': {
+    'mainInfo': {service: new ProviderService(), method: 'getProviders'},
+    'formInfo': {service: new LabService(), method: 'getAllLabs'},
+    'createProvider': {service: new ProviderService(), method: 'createProvider'}
+  },
+  'Laboratorios': {
+    'mainInfo': {service: new LabService(), method: 'getAllLabs'},
+    'formInfo': {service: new ProductService(), method: 'getAllProducts'},
+    'createLab': {service: new LabService(), method: 'createLab'}
+  }
+};
 
-async function sendInfo(event, section) {
+async function getInfo(event, section) {
   try {
-   return await getInfo(section)
-  } catch (error) {
-    console.log(error)
-  }
-  
-}
-
-async function sendFormInfo(event) {
-  try {
-    const labService = new LabService();
-    return await labService.getAllLabs();
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-async function sendExtraData(event) {
-  try {
-    const providerService = new ProviderService();
-    return await providerService.getAllProductsProvs();
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-async function createNewEntrance(event, data) {
-  try {
-    const productService = new ProductService();
-    const info = await productService.create(data)
-    console.log(info)
-    return info
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-const sectionInfo = {
-  Productos: () => {
-    const productService = new ProductService();
-      return info = productService.getAllProducts()
-  }
-}
-
-function getInfo(section) {
-  let info; 
-  switch (section) {
-    case 'Productos':
-      const productService = new ProductService();
-      info = productService.getAllProducts()
-      break;
-
-    case 'Pedidos':
-      const orderService = new OrderService();
-      info = orderService.getOrders();
-      break;
-
-    case 'Proveedores':
-      const providerService = new ProviderService();
-      info = providerService.getProviders();
-      break;
-    case 'Laboratorios':
-      const labService = new LabService();
-      info = labService.getAllLabs();
-      break;
-      
-    default:
-      break;
+    const serviceData = services[section];
+    if (serviceData) {
+      const {service, method} = serviceData[Object.keys(serviceData)[0]];
+      return await service[method]();
+    } else {
+      return null;
     }
-  return info
+  } catch (error) {
+    // Manejar la excepción
+    console.error(`Se produjo un error: ${error}`);
+    return null;
+  }
 }
 
+async function sendFormInfo(event, section) {
+  try {
+    const serviceData = services[section];
+    if (serviceData) {
+      const {service, method} = serviceData[Object.keys(serviceData)[1]];
+      return await service[method]();
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function createNewEntrance(event, section, data) {
+  try {
+    console.log(`Informacion que llega: ${data}`)
+    const serviceData = services[section];
+    if (serviceData) {
+      const {service, method} = serviceData[Object.keys(serviceData)[2]];
+      return await service[method](data);
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 function mainWindow() {
     const mainWin = new BrowserWindow({
@@ -96,9 +89,8 @@ function mainWindow() {
 }
 
 app.whenReady().then(() => {
-    ipcMain.handle('info', sendInfo);
+    ipcMain.handle('info', getInfo);
     ipcMain.handle('formData', sendFormInfo);
-    ipcMain.handle('extraData', sendExtraData);
     ipcMain.handle('sendedForm', createNewEntrance);
     mainWindow()
     app.on('activate', function () {

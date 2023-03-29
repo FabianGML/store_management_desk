@@ -34,7 +34,6 @@ class ProductService {
                     providers: cleanMatchProviders
                 }
         })
-        console.log(`productos combinados: ${JSON.stringify(combinedInfo)}`)
         return combinedInfo
     }
 

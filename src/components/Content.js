@@ -4,7 +4,7 @@ import Input from "./Input"
 import displayedInfoFunction from "../helpers/displayedInfo"
 import TableInfo from "./TableInfo"
 import { AppContext } from "../app/AppContext"
-import { getRowContents } from "../helpers/rowContents"
+import getRowContents from "../helpers/rowContents"
 
 function Content({setModal}) {
     const { searchValue, info,  setSearchValue, currentSection, setDisplayedInfo } = React.useContext(AppContext)

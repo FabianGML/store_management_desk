@@ -26,8 +26,7 @@ function App() {
           <Route path='/productos' element={<MainContent />} />
           <Route path='/pedidos' element={<MainContent />} />
           <Route path='/proveedores' element={<MainContent />} />
-          <Route path='/laboratorios' element={<MainContent />} />
-                           
+          <Route path='/laboratorios' element={<MainContent />} />  
         </Routes>
 
       </AppProvider>
