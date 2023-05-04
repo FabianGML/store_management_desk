@@ -1,23 +1,23 @@
-import React from "react"
+import {useContext, useEffect} from "react"
 import { AppContext } from "../../app/AppContext"
 import Select from 'react-select'
 
 function FormSelect({name, handleChange}) {
-    const { formData } = React.useContext(AppContext);
+    const { form, setForm, formData } = useContext(AppContext);
 
     function handleSelectInfo(e){
-        const option = {
+        setForm({
+            ...form,
             [name]:e.value
-        }
-        handleChange(e,option)
+        })
     }
-    
 
-    const optionsData = formData.map(row => {return {value: row.id, label: row.name} })
+        const optionsData = formData.map(row => {return {value: row.id, label: row.name} })
+        console.log(optionsData)
     
     
     return (
-        <Select options={ optionsData } onChange={handleSelectInfo} className='pt-5 pl-5 w-80'/>
+        <Select options={ optionsData } onChange={handleSelectInfo} className='pt-5 pl-5 w-80' />
     )
 }
 

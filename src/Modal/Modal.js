@@ -3,12 +3,8 @@ import ReactDOM from "react-dom";
 import { AppContext } from "../app/AppContext";
 import close from "../svg/close-svgrepo-com.svg";
 
-function Modal(props) {
-  const { currentSection, setCurrentSection, form, setForm, setFormData } = React.useContext(AppContext);
-  const [formState, setFormState] = React.useState({
-    loading: false,
-    response: {},
-  });
+function Modal({ productForm, orderForm, providerForm, labForm, setModal, setIndividualModal, handleSubmit}) {
+  const { currentSection, setFormData } = React.useContext(AppContext);
 
   async function getFormData() {
     await window.Data.formData(currentSection).then((result) => {
@@ -17,22 +13,12 @@ function Modal(props) {
   }
 
   function closeModal() {
-    props.setModal(false);
-  }
-
-  async function handleSubmit() {
-    try {
-      console.log(form);
-      const response = await window.Data.sendForm(currentSection, form);
-      if (response.message) {
-        setFormState({
-          loading: false,
-          response,
-        });
-        setForm({})
-      }
-    } catch (error) {
-      console.log(error);
+    if(setModal){
+      setModal(false);
+    } else {
+      setIndividualModal({
+        showModal:false
+      })
     }
   }
 
@@ -41,20 +27,20 @@ function Modal(props) {
   }, []);
 
   return ReactDOM.createPortal(
-    <div className="flex flex-col fixed modal justify-center items-end  border-4 border-slate-500 bg-slate-200 mx-64 my-24">
+    <div className="flex flex-col fixed modal justify-center items-end  border-4 border-slate-500 bg-slate-200 mx-64 mt-36 mb-14">
       <img
         src={close}
         className="h-8 mr-10 mt-5 hover:bg-stone-400 cursor-pointer rounded-md"
         onClick={closeModal}
       ></img>
       {currentSection === "Productos" &&
-        props.productForm(handleSubmit, formState, setFormState)}
+        productForm(handleSubmit)}
       {currentSection === "Pedidos" &&
-        props.orderForm(handleSubmit, formState, setFormState)}
+        orderForm(handleSubmit)}
       {currentSection === "Proveedores" &&
-        props.providerForm(handleSubmit, formState, setFormState)}
+        providerForm(handleSubmit)}
       {currentSection === "Laboratorios" &&
-        props.labForm(handleSubmit, formState, setFormState)}
+        labForm(handleSubmit)}
     </div>,
     document.getElementById("modal")
   );

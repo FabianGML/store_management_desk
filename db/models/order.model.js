@@ -47,7 +47,7 @@ class Order extends Model {
             through: models.OrderProduct,
             foreignKey : 'orderId',
             otherKey: 'productId',
-            raw:true
+        
         });
 
         this.belongsTo(models.Provider, {as: 'provider', raw:true});

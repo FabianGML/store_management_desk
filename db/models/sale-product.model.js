@@ -20,7 +20,7 @@ const SaleProductSchema = {
             key: 'id'
         },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'NO ACTION',
     },
     productId: {
         field: 'product_id',
@@ -31,7 +31,7 @@ const SaleProductSchema = {
             key: 'id'
         },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
+        onDelete: 'NO ACTION',
     },
     unitPrice: {
         field: 'unit_price',

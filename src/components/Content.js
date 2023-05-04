@@ -1,25 +1,27 @@
-import React from "react"
+import { useState, Fragment, useEffect, useContext } from "react"
 import SearchButton from "./Buttons/SearchButton"
 import Input from "./Input"
 import displayedInfoFunction from "../helpers/displayedInfo"
 import TableInfo from "./TableInfo"
 import { AppContext } from "../app/AppContext"
 import getRowContents from "../helpers/rowContents"
+import NewEntrance from "./FormComponents/NewEntrance"
 
 function Content({setModal}) {
-    const { searchValue, info,  setSearchValue, currentSection, setDisplayedInfo } = React.useContext(AppContext)
+    const { searchValue, info,  setSearchValue, currentSection, setDisplayedInfo, confirmation } = useContext(AppContext)
     const rowContents = getRowContents(currentSection)[0]
     
     const onSearchValueChange = (event) =>{
         setSearchValue(event.target.value)
     }
-    React.useEffect(() => {
+    useEffect(() => {
         displayedInfoFunction(searchValue, info, currentSection, setDisplayedInfo)
     }, [searchValue])
     
     
     return(
-        <React.Fragment>
+        <Fragment>
+            {confirmation && <NewEntrance text={confirmation}/>}
             <Input 
                 searchValue = { searchValue }
                 onSearchValueChange = { onSearchValueChange }
@@ -30,7 +32,7 @@ function Content({setModal}) {
             <TableInfo rowContents={ rowContents }/>
             
             
-        </React.Fragment>
+        </Fragment>
     )
 }
 

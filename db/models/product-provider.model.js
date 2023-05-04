@@ -18,7 +18,9 @@ const ProductProviderSchema = {
         references: {
             model: PRODUCT_TABLE,
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate:'CASCADE'
     },
     providerId: {
         field: 'provider_id',
@@ -26,7 +28,9 @@ const ProductProviderSchema = {
         references: {
             model: PROVIDER_TABLE,
             key: 'id'
-        }
+        },
+        onDelete: 'CASCADE',
+        onUpdate:'CASCADE'
     }
 }
 

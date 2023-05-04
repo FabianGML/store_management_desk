@@ -21,12 +21,16 @@ class LabService {
 
     async getOneLab(id) {
         const lab = await models.Lab.findByPk(id, {
-            include: ['products']
+            raw:true
         });
+        let products = []
+        const dbProducts = await models.Product.findAll({where:{labId: lab.id},raw:true})
+        products.push(...dbProducts)
+
         if (!lab) {
             throw boom.badRequest('El laboratorio no existe');
         }
-        return lab; // Se le agregara los proveedores y productos
+        return {...lab,products}; // Se le agregara los proveedores y productos
     }
 
     async createLab(data) {
@@ -40,15 +44,13 @@ class LabService {
         }
     }
 
-    async updateLab(id, data) {
-        const lab = await this.findOne(id);
+    async updateLab(labId, data) {
+        const {id} = await this.getOneLab(labId);
         let name = data.name;
         name = name[0].toUpperCase() + name.substring(1).toLowerCase();
         console.log(name);
-        await lab.update({name});
-        return {
-            message: '¡El laboratorio cambio correctamente!'
-        }
+        await models.Lab.update({name}, {where:{id}});
+        return '¡El laboratorio cambio correctamente!'
     }
 
     async deleteLab(id) {

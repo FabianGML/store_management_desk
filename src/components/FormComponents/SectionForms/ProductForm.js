@@ -1,14 +1,14 @@
-import React from "react";
-import { AppContext } from "../../app/AppContext";
-import FormButton from "../Buttons/FormButton";
-import FormInput from "./FormInput";
-import FormLabel from "./FormLabel";
-import FormSelect from "./FormSelect";
-import LoadingSpinner from '../LoadingSpinner'
-import NewEntrance from "./NewEntrance";
+import { useEffect, useContext } from "react";
+import { AppContext } from "../../../app/AppContext";
+import FormButton from "../../Buttons/FormButton";
+import FormInput from "./../FormInput";
+import Label from "../FormLabel";
+import FormSelect from "./../FormSelect";
+import LoadingSpinner from '../../LoadingSpinner'
+import NewEntrance from "./../NewEntrance";
 
-function ProductForm({ submitInfo, formState, setFormState}) {
-  const { form, setForm } = React.useContext(AppContext)
+function ProductForm({ submitInfo, data }) {
+  const { form, setForm, formState, setFormState } = useContext(AppContext)
   
   function handleChange(e, select = null) {
     if(e.target){ 
@@ -33,6 +33,11 @@ function ProductForm({ submitInfo, formState, setFormState}) {
     ['Caducidad','expiration', 'date']
   ]
 
+  useEffect(() => {
+    if(data) {
+      setForm(data)
+    }
+  }, [])
 
   return (
     <form
@@ -43,23 +48,23 @@ function ProductForm({ submitInfo, formState, setFormState}) {
       <div className="flex flex-wrap justify-center">
         { formInputs.map(input => (
           <div key={input[0]}>
-            <FormLabel text={`${input[0]}:`} />
+            <Label text={`${input[0]}:`} />
             <FormInput name={input[1]} type={input[2]} />
           </div>
         ))}
 
         <div>
-          <FormLabel text={'Imagen'} />
+          <Label text={'Imagen'} />
           <input type='file' className="pt-5 w-72"></input>
         </div>
 
         <div>
-          <FormLabel text={'Laboratorio'} />
+          <Label text={'Laboratorio'} />
           <FormSelect name={'labId'} handleChange={handleChange} />
         </div>
 
         <div>
-          <FormLabel text={'Descripcion'} />
+          <Label text={'Descripcion'} />
           <textarea
           name={'description'}
           className="border border-black h-32 m-5 w-64"

@@ -1,14 +1,20 @@
-import { useContext } from "react";
-import { AppContext } from "../../app/AppContext";
-import FormButton from "../Buttons/FormButton";
-import LoadingSpinner from "../LoadingSpinner";
-import FormInput from "./FormInput";
-import FormLabel from "./FormLabel";
-import NewEntrance from "./NewEntrance";
+import { useContext, useEffect } from "react";
+import { AppContext } from "../../../app/AppContext";
+import FormButton from "../../Buttons/FormButton";
+import LoadingSpinner from "../../LoadingSpinner";
+import FormInput from "../FormInput";
+import FormLabel from "../FormLabel";
+import NewEntrance from "../NewEntrance";
 
-function LabForm({ submitInfo, formState, setFormState }) {
-  const { form, setForm } = useContext(AppContext);
+function LabForm({ submitInfo, data }) {
+  const { formState, setFormState, setForm } = useContext(AppContext);
     
+  useEffect(() => {
+    if(data) {
+      setForm(data)
+    }
+  }, [])
+
   return (
     <form
       onSubmit={submitInfo}
