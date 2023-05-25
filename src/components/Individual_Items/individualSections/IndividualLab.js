@@ -2,13 +2,10 @@ import { useContext } from "react";
 import { AppContext } from "../../../app/AppContext";
 import Modal from "../../../Modal/Modal";
 import LabForm from "../../FormComponents/SectionForms/LabForm";
-import ConfirmationModal from "../ConfirmationModal";
-import DeleteButton from "../DeleteButton";
 import GoBackButton from "../GoBackButton";
-import InfoBlock from "../InfoBlock";
 import UpdateButton from "../UpdateButton";
 import IndividualDataTable from "./IndividualDataTable";
-import LoadingSpinner from "../../LoadingSpinner";
+import LoadingSpinner from "../../GeneralComponents/LoadingSpinner";
 import NewEntrance from "../../FormComponents/NewEntrance";
 
 function IndividualLab({ id, handleUpdate, individualInfo }) {
@@ -48,15 +45,7 @@ function IndividualLab({ id, handleUpdate, individualInfo }) {
       </div>
       <div className="w-full flex justify-center mt-12 gap-10">
         <UpdateButton setModal={setModal} />
-        <DeleteButton setModal={setModal} />
       </div>
-      {modal.showModal && modal.modalType === "delete" && (
-        <ConfirmationModal
-          setModal={setModal}
-          name={`Pedido No. ${id}`}
-          id={id}
-        />
-      )}
       {modal.showModal && modal.modalType === "update" && (
         <Modal
           handleSubmit={handleUpdate}

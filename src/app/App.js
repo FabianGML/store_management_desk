@@ -3,13 +3,12 @@ import { HashRouter, Routes, Route } from "react-router-dom"
 
 import { AppProvider } from "./AppContext";
 
-import Header from "../components/Header";
-import Section from "../components/Section";
-import MainContent from "../components/MainContent";
+import Header from "../components/GeneralComponents/Header";
+import Section from "../components/GeneralComponents/Section";
+import MainContent from "../components/MainContent/MainContent";
 import sections from "./sections";
-import IndividualProduct from "../components/Individual_Items/individualSections/IndividualProduct";
 import IndividualSection from "../components/Individual_Items/individualSections/IndividualSection";
-import IndividualOrder from "../components/Individual_Items/individualSections/IndividualOrder";
+import PurchaseSection from "../components/PurchaseComponents/PurchaseSection";
 
 function App() {
 
@@ -26,7 +25,7 @@ function App() {
         </Header>
 
         <Routes>
-          <Route path='/' element={<p>Inicio</p>} />
+          <Route path='/' element={<PurchaseSection />} />
           <Route path='/productos' element={<MainContent />} />
           <Route path='/productos/:id' element={<IndividualSection />} />
           <Route path='/pedidos' element={<MainContent />} />

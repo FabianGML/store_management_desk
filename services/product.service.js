@@ -53,7 +53,6 @@ class ProductService {
     let name = data.name;
     name = name[0].toUpperCase() + name.substring(1).toLowerCase().trimEnd();
     let image = data.image;
-    console.log(`imagen: ${image}`);
     const newProduct = await models.Product.create({
       ...data,
       name,
@@ -83,6 +82,66 @@ class ProductService {
   async deleteProduct(id) {
     const product = await models.Product.destroy({ where: { id } });
     return `Producto ${product} eliminado correctamente`;
+  }
+
+  async getProductForSale(form, shoppingCart) {
+    let product;
+    if (form.code) {
+      product = await models.Product.findOne({
+        where: { barCode: form.code },
+        raw: true,
+      });
+    } else if (form.product) {
+      product = await models.Product.findOne({
+        where: { id: form.product },
+        raw: true,
+      });
+    }
+
+    if (!product) {
+      return "El producto no existe"
+    }
+
+    if (shoppingCart.length < 1) {
+      return [
+        {
+          id: product.id,
+          name: product.name,
+          amount: 1,
+          unitPrice: product.price,
+          total: product.price,
+        },
+      ];
+    } else {
+      if (!shoppingCart.some((element) => element.id === product.id)) {
+        shoppingCart.push({
+          id: product.id,
+          name: product.name,
+          amount: 1,
+          unitPrice: product.price,
+          total: product.price,
+        });
+      } else {
+        for (let item of shoppingCart) {
+          if (item.id === product.id) {
+            item.amount += 1;
+            item.total = item.unitPrice * item.amount;
+          }
+        }
+      }
+      return shoppingCart
+    }
+  }
+
+  async getProductSelect() {
+    const products = await models.Product.findAll({ raw: true });
+    const idsAndNames = products.map((product) => {
+      return {
+        id: product.id,
+        name: product.name,
+      };
+    });
+    return idsAndNames;
   }
 }
 

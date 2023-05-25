@@ -54,11 +54,8 @@ class LabService {
     }
 
     async deleteLab(id) {
-        const lab = await this.findOne(id);
-        await lab.destroy();
-        return {
-            message: `¡Laboratorio ${lab.name} borrado!`
-        }
+        const lab = await models.Lab.destroy({where:{id}})
+        return `¡Laboratorio ${lab.name} borrado!`
     }
 }
 

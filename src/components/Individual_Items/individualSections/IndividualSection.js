@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "../../../app/AppContext";
 import IndividualProduct from "./IndividualProduct";
 import IndividualOrder from "./IndividualOrder";
-import LoadingSpinner from "../../LoadingSpinner";
+import LoadingSpinner from "../../GeneralComponents/LoadingSpinner";
 import IndividualProvider from "./IndividualProvider";
 import IndividualLab from "./IndividualLab";
 
@@ -39,11 +39,8 @@ function IndividualSection() {
           setConfirmation(result);
         }
       );
+      setModal(false);
       navigate(`/${currentSection}/${id}`);
-      setModal({
-        showModal: false,
-        modalType: "",
-      });
       setFormState({
         loading: false,
         response: {},

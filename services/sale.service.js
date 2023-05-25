@@ -34,6 +34,10 @@ class SaleService {
                 item.saleId = sale.id            
                 prices.push(item.TotalUnit)
                 items.push(item)
+                await models.Product.update({
+                    ...product,
+                    stock: product.stock - item.amount
+                }, {where: {id:item.productId}})
             }
         }
         await models.SaleProduct.bulkCreate(items)
@@ -42,9 +46,7 @@ class SaleService {
         sale.update({
             total
         })
-        return {
-            message: '¡Compra Registrada Correctamente!'
-        }
+        return '¡Compra Registrada Correctamente!';
     }
 }
 

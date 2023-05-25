@@ -7,14 +7,14 @@ import {
 } from "react";
 import { AppContext } from "../../../app/AppContext";
 import FormButton from "../../Buttons/FormButton";
-import LoadingSpinner from "../../LoadingSpinner";
+import LoadingSpinner from "../../GeneralComponents/LoadingSpinner";
 import FormInput from "../FormInput";
 import FormLabel from "../FormLabel";
 import FormSelect from "./../FormSelect";
 import NewEntrance from "./../NewEntrance";
 
 function OrderForm({ submitInfo, data }) {
-  const { form, setForm, formState, setFormState } = useContext(AppContext);
+  const { form, setForm, formState } = useContext(AppContext);
   const [isLoaded, setIsLoaded] = useState(false);
   const [formUpdated, setFormUpdated] = useState(false);
 
@@ -179,8 +179,6 @@ function OrderForm({ submitInfo, data }) {
           {!formState.loading && (
             <FormButton
               text={"Enviar"}
-              formState={formState}
-              setFormState={setFormState}
               handleSubmit={handleSubmit}
             />
           )}

@@ -3,8 +3,8 @@ import ReactDOM from "react-dom";
 import { AppContext } from "../app/AppContext";
 import close from "../svg/close-svgrepo-com.svg";
 
-function Modal({ productForm, orderForm, providerForm, labForm, setModal, setIndividualModal, handleSubmit}) {
-  const { currentSection, setFormData } = React.useContext(AppContext);
+function Modal({ productForm, orderForm, providerForm, labForm, handleSubmit}) {
+  const { currentSection, setFormData, setModal } = React.useContext(AppContext);
 
   async function getFormData() {
     await window.Data.formData(currentSection).then((result) => {
@@ -15,11 +15,7 @@ function Modal({ productForm, orderForm, providerForm, labForm, setModal, setInd
   function closeModal() {
     if(setModal){
       setModal(false);
-    } else {
-      setIndividualModal({
-        showModal:false
-      })
-    }
+    } 
   }
 
   React.useEffect(() => {

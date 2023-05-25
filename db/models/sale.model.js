@@ -21,15 +21,6 @@ const SaleSchema = {
         defaultValue: Sequelize.NOW,
         field: 'sale_date',
     },
-    userId: {
-        field: 'user_id',
-        allowNull: false,
-        type: DataTypes.INTEGER,
-        references: {
-            model: USER_TABLE,
-            key: 'id'
-        }
-    },
     discount: {
         type: DataTypes.STRING,
         allowNull: true,

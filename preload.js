@@ -7,5 +7,8 @@ contextBridge.exposeInMainWorld('Data', {
     individualData: (section, id) => ipcRenderer.invoke('individualData', section, id), //This property handles the individual (product, order,  provider) info, it is a "FinOne.."
     deleteEntrance: (section, id) => ipcRenderer.invoke('deleteEntrance', section, id), // Delete an entrance from the db
     updateEntrance: (section, id, data) => ipcRenderer.invoke('updateEntrance', section, id, data), // Update an entrance from the db
+    getProduct: (form, shoppingCart) => ipcRenderer.invoke('getProduct', form, shoppingCart), // Search a product by its code bar
+    productSelect: () => ipcRenderer.invoke('productSelect'), // Gets all the products to use them in sales section
+    createSale: (items) => ipcRenderer.invoke('createSale', items), // Create sale 
 
 })

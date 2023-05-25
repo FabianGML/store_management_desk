@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { AppContext } from "../app/AppContext";
+import { AppContext } from "../../app/AppContext";
 
 function Section({ svg, text, path }) {
   const {
@@ -20,15 +20,12 @@ function Section({ svg, text, path }) {
       loading: false,
       response: {},
     });
-    setModal({
-      showModal: false,
-      modalType: "",
-    });
+    setModal(false);
   };
   return (
     <li>
       <NavLink
-        to={path === "Inicio" ? "/" : path.toLowerCase()}
+        to={path === "Caja" ? "/" : path.toLowerCase()}
         style={({ isActive }) => ({
           backgroundColor: isActive ? "rgb(51 65 85)" : undefined,
         })}

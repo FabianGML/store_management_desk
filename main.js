@@ -5,6 +5,7 @@ const ProductService = require("./services/product.service");
 const OrderService = require("./services/order.service");
 const ProviderService = require("./services/provider.service");
 const LabService = require("./services/lab.service");
+const SaleService = require("./services/sale.service");
 
 const services = {
   Productos: {
@@ -14,6 +15,7 @@ const services = {
     getOneProduct: { service: new ProductService(), method: "getOneProduct" },
     deleteProduct: { service: new ProductService(), method: "deleteProduct" },
     updateProduct: { service: new ProductService(), method: "updateProduct" },
+    getProductByCode: { service: new ProductService(), method: "getProductForSale" },
   },
   Pedidos: {
     mainInfo: { service: new OrderService(), method: "getOrders" },
@@ -72,7 +74,6 @@ async function sendFormInfo(event, section) {
 
 async function createNewEntrance(event, section, data) {
   try {
-    console.log(`Data entrante: ---------- ${JSON.stringify(data)}`)
     const serviceData = services[section];
     if (serviceData) {
       const { service, method } = serviceData[Object.keys(serviceData)[2]];
@@ -111,7 +112,6 @@ async function deleteEntrance(event, section, id) {
 
 async function updateEntrance(event, section, id, data) {
   try {
-    console.log(`Datos del Update: ----------------------------------- ${JSON.stringify(data)}`)
     const serviceData = services[section];
     if (serviceData) {
       const { service, method } = serviceData[Object.keys(serviceData)[5]];
@@ -119,6 +119,40 @@ async function updateEntrance(event, section, id, data) {
     }
   } catch (error) {
     console.error(error);
+  }
+}
+
+async function getProductByCode(event, form, shoppingCart){
+  try {
+    const productService = new ProductService() 
+    if(productService) {
+      const res = await productService.getProductForSale(form, shoppingCart)
+      return res
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function getProductSelect(event){
+  try {
+    const productService = new ProductService() 
+    if(productService) {
+      return await productService.getProductSelect()
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function createSale(event, items){
+  try {
+    const saleService = new SaleService()
+    if(saleService) {
+      return await saleService.createSale(items)
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
 
@@ -142,6 +176,9 @@ app.whenReady().then(() => {
   ipcMain.handle("individualData", getOneDataById);
   ipcMain.handle("deleteEntrance", deleteEntrance);
   ipcMain.handle("updateEntrance", updateEntrance);
+  ipcMain.handle("getProduct", getProductByCode);
+  ipcMain.handle("productSelect", getProductSelect);
+  ipcMain.handle("createSale", createSale);
   mainWindow();
   app.on("activate", function () {
     if (BrowserWindow.getAllWindows().length === 0) mainWindow();

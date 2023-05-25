@@ -1,5 +1,5 @@
 import React from "react";
-import { AppContext } from "../app/AppContext";
+import { AppContext } from "../../app/AppContext";
 
 function Title() {
     const { currentSection } = React.useContext(AppContext);

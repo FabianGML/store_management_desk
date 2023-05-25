@@ -4,13 +4,11 @@ import { AppContext } from "../../../app/AppContext";
 import Modal from "../../../Modal/Modal";
 import NewEntrance from "../../FormComponents/NewEntrance";
 import ProductForm from "../../FormComponents/SectionForms/ProductForm";
-import ConfirmationModal from "../ConfirmationModal";
-import DeleteButton from "../DeleteButton";
 import GoBackButton from "../GoBackButton";
 import InfoBlock from "../InfoBlock";
 import UpdateButton from "../UpdateButton";
 
-function IndividualProduct({ id, handleUpdate, individualInfo}) {
+function IndividualProduct({handleUpdate, individualInfo}) {
   const { confirmation, modal, setModal } = useContext(AppContext);
   const {
     name,
@@ -22,7 +20,7 @@ function IndividualProduct({ id, handleUpdate, individualInfo}) {
     expiration2,
     image,
   } = individualInfo;
-  console.log(individualInfo)
+  
   return (
     <Fragment>
         {confirmation && <NewEntrance text={confirmation}/>}

@@ -1,13 +1,13 @@
 import { useContext, useEffect } from "react";
 import { AppContext } from "../../../app/AppContext";
 import FormButton from "../../Buttons/FormButton";
-import LoadingSpinner from "../../LoadingSpinner";
+import LoadingSpinner from "../../GeneralComponents/LoadingSpinner";
 import FormInput from "../FormInput";
 import FormLabel from "../FormLabel";
 import NewEntrance from "../NewEntrance";
 
 function LabForm({ submitInfo, data }) {
-  const { formState, setFormState, setForm } = useContext(AppContext);
+  const { formState, setForm } = useContext(AppContext);
     
   useEffect(() => {
     if(data) {
@@ -33,8 +33,6 @@ function LabForm({ submitInfo, data }) {
       {!formState.loading && (
         <FormButton
           text={"Enviar"}
-          formState={formState}
-          setFormState={setFormState}
           handleSubmit={submitInfo}
         />
       )}

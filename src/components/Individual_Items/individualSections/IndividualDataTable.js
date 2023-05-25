@@ -1,6 +1,5 @@
 import { Fragment, useContext, useEffect, useState } from "react";
-import { AppContext } from "../../../app/AppContext";
-import Row from "../../Row";
+import Row from "../../GeneralComponents/Row";
 
 function IndividualDataTable({ individualData, total, columns }) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -10,7 +9,7 @@ function IndividualDataTable({ individualData, total, columns }) {
       setIsLoaded(true);
     }
   }, []);
-  console.log(columns)
+
 
   return (
     <table className=" w-full border border-slate-300">
@@ -19,7 +18,9 @@ function IndividualDataTable({ individualData, total, columns }) {
           <thead>
             <tr className="h-14 bg-slate-800">
               {columns[0].map((column, index) => (
-                <th key={index} className="text-white">{column}</th>
+                <th key={index} className="text-white">
+                  {column}
+                </th>
               ))}
             </tr>
           </thead>
@@ -33,7 +34,7 @@ function IndividualDataTable({ individualData, total, columns }) {
                 individualColumns={columns[1]}
               />
             ))}
-            {total && (
+            {total > 0 && (
               <tr className="h-14 bg-slate-800 text-white">
                 <td></td>
                 <td></td>

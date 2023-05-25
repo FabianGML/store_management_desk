@@ -2,23 +2,20 @@ import { useContext } from "react";
 import { AppContext } from "../../../app/AppContext";
 import Modal from "../../../Modal/Modal";
 import OrderForm from "../../FormComponents/SectionForms/OrderForm";
-import ConfirmationModal from "../ConfirmationModal";
-import DeleteButton from "../DeleteButton";
 import GoBackButton from "../GoBackButton";
 import InfoBlock from "../InfoBlock";
 import UpdateButton from "../UpdateButton";
 import IndividualDataTable from "./IndividualDataTable";
-import LoadingSpinner from "../../LoadingSpinner";
+import LoadingSpinner from "../../GeneralComponents/LoadingSpinner";
 import NewEntrance from "../../FormComponents/NewEntrance";
 
 function IndividualOrder({ id, handleUpdate, individualInfo }) {
   const { modal, setModal, confirmation } = useContext(AppContext);
-  console.log(individualInfo);
 
   const columns = [
     ["Producto", "Cantidad", "Precio Unitario", "Importe"],
     ["name", "amount", "unitPrice", "totalPrice"],
-  ]
+  ];
 
   if (!individualInfo) {
     return <LoadingSpinner />;
@@ -47,12 +44,9 @@ function IndividualOrder({ id, handleUpdate, individualInfo }) {
               labelText="Proveedor:"
               info={individualInfo["provider.name"]}
             />
-            <div className="w-full flex justify-center mt-12 gap-10">
-              <UpdateButton setModal={setModal} />
-            </div>
           </div>
         </div>
-        <div className="w-7/12">
+        <div className="w-7/12 ml-6">
           <h3 className="text-4xl font-semibold text-center">Productos</h3>
           {individualInfo.items && (
             <IndividualDataTable
@@ -62,6 +56,9 @@ function IndividualOrder({ id, handleUpdate, individualInfo }) {
             />
           )}
         </div>
+      </div>
+      <div className="w-full flex justify-center mt-12 gap-10">
+        <UpdateButton setModal={setModal} />
       </div>
       {modal.showModal && modal.modalType === "update" && (
         <Modal

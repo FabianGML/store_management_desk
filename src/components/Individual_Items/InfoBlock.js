@@ -1,4 +1,4 @@
-import Label from "../Label";
+import Label from "../GeneralComponents/Label";
 
 function InfoBlock({ labelText, info }) {
   return (

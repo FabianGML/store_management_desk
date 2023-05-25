@@ -2,7 +2,6 @@ const Joi = require('joi');
 
 /* Sales schema */
 const saleId = Joi.number().positive().required();
-const userId = Joi.number().positive().required();
 
 const productId = Joi.number().positive().required();
 const amount = Joi.number().positive();

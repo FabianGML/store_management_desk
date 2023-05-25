@@ -1,13 +1,11 @@
 import { useContext } from "react";
 import { AppContext } from "../../../app/AppContext";
 import ProviderForm from "../../FormComponents/SectionForms/ProviderForm";
-import LoadingSpinner from "../../LoadingSpinner";
+import LoadingSpinner from "../../GeneralComponents/LoadingSpinner";
 import GoBackButton from "../GoBackButton";
 import InfoBlock from "../InfoBlock";
 import IndividualDataTable from "./IndividualDataTable";
 import Modal from "../../../Modal/Modal";
-import ConfirmationModal from "../ConfirmationModal";
-import DeleteButton from "../DeleteButton";
 import UpdateButton from "../UpdateButton";
 import NewEntrance from "../../FormComponents/NewEntrance";
 

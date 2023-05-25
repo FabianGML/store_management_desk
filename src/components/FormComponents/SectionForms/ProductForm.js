@@ -4,11 +4,11 @@ import FormButton from "../../Buttons/FormButton";
 import FormInput from "./../FormInput";
 import Label from "../FormLabel";
 import FormSelect from "./../FormSelect";
-import LoadingSpinner from '../../LoadingSpinner'
+import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
 import NewEntrance from "./../NewEntrance";
 
 function ProductForm({ submitInfo, data }) {
-  const { form, setForm, formState, setFormState } = useContext(AppContext)
+  const { form, setForm, formState } = useContext(AppContext)
   
   function handleChange(e, select = null) {
     if(e.target){ 
@@ -26,9 +26,10 @@ function ProductForm({ submitInfo, data }) {
   }
 
   const formInputs = [
-    ['Producto','name', 'text'],
+    ['Nombre','name', 'text'],
     ['Precio','price', 'number'],
     ['Stock','stock', 'number'],
+    ['Codigo de Barras','barCode', 'text'],
     ['Ingredientes','ingredients', 'text'],
     ['Caducidad','expiration', 'date']
   ]
@@ -45,7 +46,7 @@ function ProductForm({ submitInfo, data }) {
       onSubmit={submitInfo}
     > 
       {(!formState.loading && formState.response.message  ) && <NewEntrance text={formState.response.message}/>}
-      <div className="flex flex-wrap justify-center">
+      <div className="flex flex-wrap justify-center w-11/12">
         { formInputs.map(input => (
           <div key={input[0]}>
             <Label text={`${input[0]}:`} />
@@ -67,7 +68,7 @@ function ProductForm({ submitInfo, data }) {
           <Label text={'Descripcion'} />
           <textarea
           name={'description'}
-          className="border border-black h-32 m-5 w-64"
+          className="border border-black h-32 m-5 w-64 p-2"
           onChange={handleChange}
           ></textarea>
         </div>
@@ -77,8 +78,6 @@ function ProductForm({ submitInfo, data }) {
         {!formState.loading && 
         <FormButton 
         text={"Enviar"} 
-        formState={formState} 
-        setFormState={setFormState} 
         handleSubmit={submitInfo}/>}
       </div>
     

@@ -1,7 +1,7 @@
-import Row from "./Row";
-import React from "react";
-import { AppContext } from "../app/AppContext";
-import LoadingSpinner from "./LoadingSpinner";
+import { useContext, useEffect, Fragment } from "react";
+import Row from "../GeneralComponents/Row";
+import { AppContext } from "../../app/AppContext";
+import LoadingSpinner from "../GeneralComponents/LoadingSpinner";
 
 function Data() {
   const {
@@ -11,7 +11,7 @@ function Data() {
     info,
     setInfo,
     currentSection,
-  } = React.useContext(AppContext);
+  } = useContext(AppContext);
 
   //Geting the info depends in the section we currently are
   async function getInfo() {
@@ -21,7 +21,7 @@ function Data() {
     });
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     getInfo();
     console.log(info);
     console.log(currentSection);
@@ -36,11 +36,11 @@ function Data() {
     );
   }
   return (
-    <React.Fragment>
+    <Fragment>
       {displayedInfo.map((data, index) => (
           <Row key={index} row={index} {...data} />
       ))}
-    </React.Fragment>
+    </Fragment>
   );
 }
 

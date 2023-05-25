@@ -1,8 +1,8 @@
-import {useContext, useEffect} from "react"
+import {useContext} from "react"
 import { AppContext } from "../../app/AppContext"
 import Select from 'react-select'
 
-function FormSelect({name, handleChange}) {
+function FormSelect({name}) {
     const { form, setForm, formData } = useContext(AppContext);
 
     function handleSelectInfo(e){
@@ -11,9 +11,9 @@ function FormSelect({name, handleChange}) {
             [name]:e.value
         })
     }
-
-        const optionsData = formData.map(row => {return {value: row.id, label: row.name} })
-        console.log(optionsData)
+    if(formData) {
+        var optionsData = formData.map(row => {return {value: row.id, label: row.name} })
+    }
     
     
     return (

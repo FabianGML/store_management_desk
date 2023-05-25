@@ -1,4 +1,4 @@
-const { Model, DataTypes, Sequelize } = require('sequelize');
+const { Model, DataTypes, Sequelize, Op } = require('sequelize');
 
 const PROVIDER_TABLE = 'providers';
 
@@ -26,8 +26,12 @@ const ProviderSchema = {
     },
     phone2: {
         allowNull: true,
-        type: DataTypes.STRING,
-        unique: true,
+        type: Sequelize.DataTypes.STRING,
+        unique: {
+          where:{
+            [Op.not]: null
+          }
+        },
         field: 'phone_2'
     },
 }

@@ -1,11 +1,11 @@
 import React from "react";
 import { AppContext } from "../../app/AppContext";
 
-function SearchButton({setModal}) {
-  const { currentSection } = React.useContext(AppContext);
+function SearchButton() {
+  const { currentSection, setModal } = React.useContext(AppContext);
 
   function openModal() {
-    setModal(prevState => !prevState);
+    setModal(true);
   }
   return (
     <button

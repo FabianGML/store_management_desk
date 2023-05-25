@@ -1,5 +1,5 @@
 import React from "react";
-import { AppContext } from "../app/AppContext";
+import { AppContext } from "../../app/AppContext";
 
 function Input({ searchValue, onSearchValueChange, width, margin }) {
     const { currentSection } = React.useContext(AppContext);
