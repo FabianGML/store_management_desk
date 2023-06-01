@@ -1,13 +1,14 @@
-import { Fragment, useContext, useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { AppContext } from "../../../app/AppContext";
-import IndividualProduct from "./IndividualProduct";
-import IndividualOrder from "./IndividualOrder";
-import LoadingSpinner from "../../GeneralComponents/LoadingSpinner";
-import IndividualProvider from "./IndividualProvider";
-import IndividualLab from "./IndividualLab";
+import { Fragment, useContext, useEffect, useMemo } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { AppContext } from '../../../app/AppContext'
+import IndividualProduct from './IndividualProduct'
+import IndividualOrder from './IndividualOrder'
+import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
+import IndividualProvider from './IndividualProvider'
+import IndividualLab from './IndividualLab'
+import NewEntrance from '../../FormComponents/NewEntrance'
 
-function IndividualSection() {
+function IndividualSection () {
   const {
     currentSection,
     individualInfo,
@@ -16,81 +17,86 @@ function IndividualSection() {
     confirmation,
     setConfirmation,
     setFormState,
-    setModal,
-  } = useContext(AppContext);
+    setModal
+  } = useContext(AppContext)
 
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams()
+  const navigate = useNavigate()
 
-  async function getIndividualData() {
+  async function getIndividualData () {
     await window.Data.individualData(currentSection, id).then((result) => {
-      setIndividualInfo(result);
-    });
+      setIndividualInfo(result)
+    })
   }
 
   useEffect(() => {
-    getIndividualData();
-  }, [currentSection, confirmation]);
+    getIndividualData()
+  }, [currentSection, confirmation])
 
-  async function handleUpdate() {
+  async function handleUpdate () {
     try {
       await window.Data.updateEntrance(currentSection, id, form).then(
         (result) => {
-          setConfirmation(result);
+          setConfirmation(result)
         }
-      );
-      setModal(false);
-      navigate(`/${currentSection}/${id}`);
+      )
+      setModal(false)
+      navigate(`/${currentSection}/${id}`)
       setFormState({
         loading: false,
-        response: {},
-      });
+        response: {}
+      })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   const memorizedIndividualInfo = useMemo(
     () => individualInfo,
     [individualInfo]
-  );
+  )
 
   if (!individualInfo) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner />
   }
 
   return (
-    <Fragment>
-      {currentSection === "Productos" && (
+    <>
+      {confirmation && (
+        <div className='w-full pt-32 ml-10 flex justify-center'>
+          <NewEntrance text={confirmation} />
+        </div>
+      )}
+      {currentSection === 'Productos' && (
         <IndividualProduct
           id={id}
           handleUpdate={handleUpdate}
           individualInfo={memorizedIndividualInfo}
         />
       )}
-      {currentSection === "Pedidos" && (
+      {currentSection === 'Pedidos' && (
         <IndividualOrder
           id={id}
           handleUpdate={handleUpdate}
           individualInfo={memorizedIndividualInfo}
         />
       )}
-      {currentSection === "Proveedores" && (
+      {currentSection === 'Proveedores' && (
         <IndividualProvider
           id={id}
           handleUpdate={handleUpdate}
           individualInfo={memorizedIndividualInfo}
         />
       )}
-      {currentSection === "Laboratorios" && (
+      {currentSection === 'Laboratorios' && (
         <IndividualLab
           id={id}
           handleUpdate={handleUpdate}
           individualInfo={memorizedIndividualInfo}
         />
       )}
-    </Fragment>
-  );
+    </>
+  )
 }
 
-export default IndividualSection;
+export default IndividualSection

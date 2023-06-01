@@ -1,24 +1,23 @@
-import { Fragment, useContext, useEffect, useState } from "react";
-import Row from "../../GeneralComponents/Row";
+import { useEffect, useState } from 'react'
+import Row from '../../GeneralComponents/Row'
 
-function IndividualDataTable({ individualData, total, columns }) {
-  const [isLoaded, setIsLoaded] = useState(false);
+function IndividualDataTable ({ individualData, total, columns }) {
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     if (individualData) {
-      setIsLoaded(true);
+      setIsLoaded(true)
     }
-  }, []);
-
+  }, [])
 
   return (
-    <table className=" w-full border border-slate-300">
+    <table className=' w-full border border-slate-300'>
       {isLoaded && (
-        <Fragment>
+        <>
           <thead>
-            <tr className="h-14 bg-slate-800">
+            <tr className='h-14 bg-slate-800'>
               {columns[0].map((column, index) => (
-                <th key={index} className="text-white">
+                <th key={index} className='text-white'>
                   {column}
                 </th>
               ))}
@@ -30,23 +29,23 @@ function IndividualDataTable({ individualData, total, columns }) {
                 key={index}
                 row={index}
                 {...data}
-                isIndividual={true}
+                isIndividual
                 individualColumns={columns[1]}
               />
             ))}
             {total > 0 && (
-              <tr className="h-14 bg-slate-800 text-white">
-                <td></td>
-                <td></td>
-                <td></td>
-                <td className="text-2xl">{`Total: $${total}`}</td>
+              <tr className='h-14 bg-slate-800 text-white'>
+                <td />
+                <td />
+                <td />
+                <td className='text-2xl'>{`Total: $${total}`}</td>
               </tr>
             )}
           </tbody>
-        </Fragment>
+        </>
       )}
     </table>
-  );
+  )
 }
 
-export default IndividualDataTable;
+export default IndividualDataTable

@@ -3,41 +3,40 @@ import {
   useContext,
   useEffect,
   Fragment,
-  useLayoutEffect,
-} from "react";
-import { AppContext } from "../../../app/AppContext";
-import FormButton from "../../Buttons/FormButton";
-import LoadingSpinner from "../../GeneralComponents/LoadingSpinner";
-import FormInput from "../FormInput";
-import FormLabel from "../FormLabel";
-import NewEntrance from "../NewEntrance";
+  useLayoutEffect
+} from 'react'
+import { AppContext } from '../../../app/AppContext'
+import FormButton from '../../Buttons/FormButton'
+import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
+import FormInput from '../FormInput'
+import FormLabel from '../FormLabel'
 
-function ProviderForm({ submitInfo, data }) {
-  const { form, setForm, formState } = useContext(AppContext);
+function ProviderForm ({ submitInfo, data }) {
+  const { form, setForm, formState } = useContext(AppContext)
 
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [formUpdated, setFormUpdated] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [formUpdated, setFormUpdated] = useState(false)
 
-  function handleInputChange(event, index) {
-    const { name, value } = event.target;
-    const labs = [...form.labs];
-    labs[index][name] = value;
-    setForm({ ...form, labs });
+  function handleInputChange (event, index) {
+    const { name, value } = event.target
+    const labs = [...form.labs]
+    labs[index][name] = value
+    setForm({ ...form, labs })
   }
 
-  function handleAddItem() {
-    const newLab = { labName: "" };
-    setForm({ ...form, labs: [...form.labs, newLab] });
+  function handleAddItem () {
+    const newLab = { labName: '' }
+    setForm({ ...form, labs: [...form.labs, newLab] })
   }
 
-  function handleSubmit() {
-    setFormUpdated(true);
+  function handleSubmit () {
+    setFormUpdated(true)
   }
 
-  function handleRemoveLab(index) {
-    const labs = [...form.labs];
-    labs.splice(index, 1);
-    setForm({ ...form, labs });
+  function handleRemoveLab (index) {
+    const labs = [...form.labs]
+    labs.splice(index, 1)
+    setForm({ ...form, labs })
   }
 
   useLayoutEffect(() => {
@@ -48,125 +47,115 @@ function ProviderForm({ submitInfo, data }) {
         email: data.email,
         phone: data.phone,
         phone2: data.phone2,
-        labs: data.labs,
-      });
-      setIsLoaded(true);
+        labs: data.labs
+      })
+      setIsLoaded(true)
     } else {
       setForm({
-        name: "",
-        email: "",
-        phone: "",
-        phone2: "",
-        labs: [{ labName: "" }],
-      });
-      setIsLoaded(true);
+        name: '',
+        email: '',
+        phone: '',
+        phone2: '',
+        labs: [{ labName: '' }]
+      })
+      setIsLoaded(true)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (formUpdated) {
-      submitInfo();
-      setFormUpdated(false);
+      submitInfo()
+      setFormUpdated(false)
     }
-  }, [handleSubmit]);
+  }, [handleSubmit])
 
   return (
     <form
-      className="p-5 w-full h-full overflow-scroll flex flex-col items-center"
+      className='p-5 w-full h-full overflow-scroll flex flex-col items-center'
       onSubmit={handleSubmit}
     >
-      {!formState.loading && formState.response.message && (
-        <NewEntrance text={formState.response.message} />
-      )}
       {isLoaded && (
-        <Fragment>
-          <div className="flex flex-wrap justify-center" id="form">
+        <>
+          <div className='flex flex-wrap justify-center' id='form'>
             <div>
-              <FormLabel text={"Nombre del Proveedor:"} />
+              <FormLabel text='Nombre del Proveedor:' />
               <FormInput
-                name={"name"}
-                type={"text"}
+                name='name'
+                type='text'
                 specialChange={(event) =>
-                  setForm({ ...form, name: event.target.value })
-                }
+                  setForm({ ...form, name: event.target.value })}
               />
             </div>
             <div>
-              <FormLabel text={"Email:"} />
+              <FormLabel text='Email:' />
               <FormInput
-                name={"email"}
-                type={"text"}
+                name='email'
+                type='text'
                 specialChange={(event) =>
-                  setForm({ ...form, email: event.target.value })
-                }
+                  setForm({ ...form, email: event.target.value })}
               />
             </div>
             <div>
-              <FormLabel text={"Telefono:"} />
+              <FormLabel text='Telefono:' />
               <FormInput
-                name={"phone"}
-                type={"phone"}
+                name='phone'
+                type='phone'
                 specialChange={(event) =>
-                  setForm({ ...form, phone: event.target.value })
-                }
+                  setForm({ ...form, phone: event.target.value })}
               />
             </div>
             <div>
-              <FormLabel text={"Telefono 2:"} />
+              <FormLabel text='Telefono 2:' />
               <FormInput
-                name={"phone2"}
-                type={"phone"}
+                name='phone2'
+                type='phone'
                 specialChange={(event) =>
-                  setForm({ ...form, phone2: event.target.value })
-                }
+                  setForm({ ...form, phone2: event.target.value })}
               />
             </div>
-            <h3 className="basis-full">Laboratorios:</h3>
+            <h3 className='basis-full'>Laboratorios:</h3>
             {form.labs.map((lab, index) => (
-              <div className="flex gap-10 items-center">
+              <div className='flex gap-10 items-center' key={index}>
                 <div
                   key={index}
-                  className="flex flex-wrap border border-gray-400 rounded-lg mb-6"
+                  className='flex flex-wrap border border-gray-400 rounded-lg mb-6'
                 >
                   <div>
-                    <FormLabel text="Nombre" />
+                    <FormLabel text='Nombre' />
                     <input
                       id={`name-${index}`}
-                      name="labName"
-                      type="text"
+                      name='labName'
+                      type='text'
                       value={lab.labName}
-                      className="h-12 border border-black m-5 pl-3"
+                      className='h-12 border border-black m-5 pl-3'
                       onChange={(event) => handleInputChange(event, index)}
                     />
                   </div>
                 </div>
                 <div
-                  className="w-12 h-6 rounded-full mb-6 bg-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-400 hover:text-gray-700 cursor-pointer"
+                  className='w-12 h-6 rounded-full mb-6 bg-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-400 hover:text-gray-700 cursor-pointer'
                   onClick={() => handleRemoveLab(index)}
                 >
-                  <span className="text-2xl font-bold leading-none">-</span>
+                  <span className='text-2xl font-bold leading-none'>-</span>
                 </div>
               </div>
             ))}
           </div>
           <div
-            className="w-12 rounded-full mb-6 bg-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-400 hover:text-gray-700 cursor-pointer"
+            className='w-12 rounded-full mb-6 bg-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-400 hover:text-gray-700 cursor-pointer'
             onClick={handleAddItem}
           >
-            <span className="text-2xl font-bold leading-none">+</span>
+            <span className='text-2xl font-bold leading-none'>+</span>
           </div>
-        </Fragment>
+        </>
       )}
 
       {!formState.loading && (
-        <FormButton
-          text={"Enviar"}
-          handleSubmit={handleSubmit}
-        />
+        <FormButton text='Enviar' handleSubmit={handleSubmit} />
       )}
       {formState.loading && <LoadingSpinner />}
     </form>
-  );
+  )
 }
 
-export default ProviderForm;
+export default ProviderForm

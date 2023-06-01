@@ -1,30 +1,28 @@
-import { useContext, useRef } from "react"
-import { AppContext } from "../../app/AppContext"
+import { useContext } from 'react'
+import { AppContext } from '../../app/AppContext'
 
-function FormInput({ name, type, specialChange, placeHolder, autofocus}) {
-    const { form, setForm } = useContext(AppContext);
-    
-    function handleChange(e) {
-            setForm({
-                ...form,
-                [e.target.name]: e.target.value
-            })
-            console.log(form)
-    }
+function FormInput ({ name, type, specialChange, placeHolder, autofocus }) {
+  const { form, setForm } = useContext(AppContext)
 
-    return (
-        <input 
-        type={ type }
-        className="h-12 border border-black m-5 pl-3"
-        autofocus
-        name={name}
-        value={form[name]}
-        onChange={specialChange || handleChange}
-        placeholder={placeHolder || ''}
-        >
+  function handleChange (e) {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    })
+    console.log(form)
+  }
 
-        </input>
-    )
+  return (
+    <input
+      type={type}
+      className='h-12 border border-black m-5 pl-3'
+      autofocus
+      name={name}
+      value={form[name]}
+      onChange={specialChange || handleChange}
+      placeholder={placeHolder || ''}
+    />
+  )
 }
 
 export default FormInput

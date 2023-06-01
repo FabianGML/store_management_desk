@@ -1,38 +1,36 @@
-import { useContext, useState } from "react";
-import Content from "./Content";
-import Title from "../GeneralComponents/Title";
-import Modal from "../../Modal/Modal";
-import ProductForm from "../FormComponents/SectionForms/ProductForm";
-import OrderForm from "../FormComponents/SectionForms/OrderForm";
-import ProviderForm from "../FormComponents/SectionForms/ProviderForm";
-import LabForm from "../FormComponents/SectionForms/LabForm";
-import { AppContext } from "../../app/AppContext";
+import { useContext } from 'react'
+import Content from './Content'
+import Title from '../GeneralComponents/Title'
+import Modal from '../../Modal/Modal'
+import ProductForm from '../FormComponents/SectionForms/ProductForm'
+import OrderForm from '../FormComponents/SectionForms/OrderForm'
+import ProviderForm from '../FormComponents/SectionForms/ProviderForm'
+import LabForm from '../FormComponents/SectionForms/LabForm'
+import { AppContext } from '../../app/AppContext'
 
-function MainContent() {
+function MainContent () {
   const { currentSection, form, setForm, setFormState, modal } = useContext(AppContext)
-  // const [modal, setModal] = useState(false);
-  
 
-  async function handleSubmit() {
+  async function handleSubmit () {
     try {
-      const response = await window.Data.sendForm(currentSection, form);
-      if (response.message) {
+      const response = await window.Data.sendForm(currentSection, form)
+      if (response) {
         setFormState({
           loading: false,
-          response,
-        });
-        setForm({});
+          response
+        })
+        setForm({})
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 
   return (
-    <section className="h-screen pt-32 px-5 flex">
-      <div className="w-full mr-7">
+    <section className='h-screen pt-32 px-5 flex'>
+      <div className='w-full mr-7'>
         <Title />
-        <Content/>
+        <Content />
       </div>
       {modal && (
         <Modal
@@ -60,7 +58,7 @@ function MainContent() {
         />
       )}
     </section>
-  );
+  )
 }
 
-export default MainContent;
+export default MainContent
