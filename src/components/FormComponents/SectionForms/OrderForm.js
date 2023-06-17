@@ -8,9 +8,8 @@ import {
 import { AppContext } from '../../../app/AppContext'
 import FormButton from '../../Buttons/FormButton'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
-import FormInput from '../FormInput'
-import FormLabel from '../FormLabel'
 import FormSelect from './../FormSelect'
+import InputLabel from '../InputLabel'
 
 function OrderForm ({ submitInfo, data }) {
   const { form, setForm, formState } = useContext(AppContext)
@@ -70,11 +69,11 @@ function OrderForm ({ submitInfo, data }) {
         <>
           <div className='flex flex-wrap '>
             <div>
-              <FormLabel text='Proveedor' />
+              <label>Proveedor</label>
               <FormSelect name='providerId' />
             </div>
             <div className='mx-10 p-5 flex flex-col border border-stone-600 rounded-lg'>
-              <FormLabel text='¿Esta Pagado?' />
+              <label>¿Esta Pagado?</label>
               <input
                 id='isPayed'
                 type='checkbox'
@@ -84,15 +83,13 @@ function OrderForm ({ submitInfo, data }) {
                   setForm({ ...form, isPayed: event.target.checked })}
               />
             </div>
-            <div>
-              <FormLabel text='Fecha de Llegada' />
-              <FormInput
-                name='orderArrive'
-                type='date'
-                specialChange={(event) =>
-                  setForm({ ...form, orderArrive: event.target.value })}
-              />
-            </div>
+            <InputLabel
+              text='Fecha de Llegada'
+              name='orderArrive'
+              type='date'
+              specialChange={(event) =>
+                setForm({ ...form, orderArrive: event.target.value })}
+            />
 
             <h3 className='basis-full'>Artículos:</h3>
 
@@ -103,7 +100,7 @@ function OrderForm ({ submitInfo, data }) {
                     className='flex flex-wrap border border-gray-400 rounded-lg mb-6'
                   >
                     <div>
-                      <FormLabel text='Nombre' />
+                      <label>Nombre:</label>
                       {/* <FormInput name='name' type='text' specialChange={event => handleInputChange(event, index) } /> */}
                       <input
                         id={`name-${index}`}
@@ -115,8 +112,7 @@ function OrderForm ({ submitInfo, data }) {
                       />
                     </div>
                     <div>
-                      <FormLabel text='Precio Unitario' />
-                      {/* <FormInput name='unitPrice' type='number' specialChange={event => handleInputChange(event, index) } /> */}
+                      <label>Precio Unitario: </label>
                       <input
                         id={`unitPrice-${index}`}
                         name='unitPrice'
@@ -128,7 +124,7 @@ function OrderForm ({ submitInfo, data }) {
                       />
                     </div>
                     <div>
-                      <FormLabel text='Cantidad ' />
+                      <label>Cantidad:</label>
                       {/* <FormInput name='amount' type='number' specialChange={event => handleInputChange(event, index) } /> */}
                       <input
                         id={`amount-${index}`}
@@ -141,7 +137,7 @@ function OrderForm ({ submitInfo, data }) {
                       />
                     </div>
                     <div>
-                      <FormLabel text='Fecha de Caducidad' />
+                      <label>Fecha de Caducidad:</label>
                       {/* <FormInput name='expiration' type='date' specialChange={event => handleInputChange(event, index) } /> */}
                       <input
                         id={`expiration-${index}`}

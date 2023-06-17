@@ -75,7 +75,22 @@ function Row (props) {
               onClick={() =>
                 openDeleteModal(props.id, props.name)}
             />
-
+          </td>
+        )
+      case 'saleDate':
+        // eslint-disable-next-line no-var
+        var date = value.toLocaleString()
+        return (
+          <td key={column}>
+            {date}
+          </td>
+        )
+      case 'discount':
+        // eslint-disable-next-line no-var
+        var discount = value > 0 ? `%${value}` : 'N/A'
+        return (
+          <td key={column}>
+            {discount}
           </td>
         )
       default:

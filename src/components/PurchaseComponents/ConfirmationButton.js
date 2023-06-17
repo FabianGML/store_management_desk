@@ -62,7 +62,7 @@ function ConfirmationButton ({ id }) {
       className='h-12 w-24 bg-slate-900 text-white'
       onClick={handleModalFunction[modal.modalType]}
     >
-      Si
+      Confirmar
     </button>
   )
 }

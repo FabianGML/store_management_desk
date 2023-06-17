@@ -2,8 +2,7 @@ import { useContext, useEffect } from 'react'
 import { AppContext } from '../../../app/AppContext'
 import FormButton from '../../Buttons/FormButton'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
-import FormInput from '../FormInput'
-import FormLabel from '../FormLabel'
+import InputLabel from '../InputLabel'
 
 function LabForm ({ submitInfo, data }) {
   const { formState, setForm } = useContext(AppContext)
@@ -20,10 +19,7 @@ function LabForm ({ submitInfo, data }) {
       className='p-5 w-full h-full overflow-scroll flex flex-col items-center'
     >
       <div className='flex flex-wrap '>
-        <div>
-          <FormLabel text='Nombre del laboratorio' />
-          <FormInput name='name' type='text' />
-        </div>
+        <InputLabel text='Nombre del laboratorio' name='name' type='text' />
       </div>
       {!formState.loading && (
         <FormButton

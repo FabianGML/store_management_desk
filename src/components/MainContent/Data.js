@@ -23,8 +23,6 @@ function Data () {
 
   useEffect(() => {
     getInfo()
-    console.log(info)
-    console.log(currentSection)
   }, [currentSection])
 
   if (displayedInfo.length === 0 && searchValue.length === 0) {
@@ -37,7 +35,7 @@ function Data () {
   }
   return (
     <>
-      {displayedInfo.map((data, index) => (
+      {Array.isArray(info) && displayedInfo.map((data, index) => (
         <Row key={index} row={index} {...data} />
       ))}
     </>

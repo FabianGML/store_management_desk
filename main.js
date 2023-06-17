@@ -40,6 +40,9 @@ const services = {
     getOneLab: { service: new LabService(), method: 'getOneLab' },
     deleteLab: { service: new LabService(), method: 'deleteLab' },
     updateLab: { service: new LabService(), method: 'updateLab' }
+  },
+  Ventas: {
+    mainInfo: { service: new SaleService(), method: 'getSalesBetweenDates' }
   }
 }
 
@@ -156,6 +159,17 @@ async function createSale (event, items) {
   }
 }
 
+async function getSale (event, dates) {
+  try {
+    const saleService = new SaleService()
+    if (saleService) {
+      return await saleService.getSalesBetweenDates(dates)
+    }
+  } catch (error) {
+
+  }
+}
+
 function mainWindow () {
   const mainWin = new BrowserWindow({
     width: 1000,
@@ -179,6 +193,7 @@ app.whenReady().then(() => {
   ipcMain.handle('getProduct', getProductByCode)
   ipcMain.handle('productSelect', getProductSelect)
   ipcMain.handle('createSale', createSale)
+  ipcMain.handle('getSales', getSale)
   mainWindow()
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) mainWindow()

@@ -7,28 +7,15 @@ import OrderForm from '../FormComponents/SectionForms/OrderForm'
 import ProviderForm from '../FormComponents/SectionForms/ProviderForm'
 import LabForm from '../FormComponents/SectionForms/LabForm'
 import { AppContext } from '../../app/AppContext'
+import useSubmitForm from '../hooks/useSubmitForm'
 
 function MainContent () {
-  const { currentSection, form, setForm, setFormState, modal } = useContext(AppContext)
-
-  async function handleSubmit () {
-    try {
-      const response = await window.Data.sendForm(currentSection, form)
-      if (response) {
-        setFormState({
-          loading: false,
-          response
-        })
-        setForm({})
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const { modal } = useContext(AppContext)
+  const handleSubmit = useSubmitForm()
 
   return (
-    <section className='h-screen pt-32 px-5 flex'>
-      <div className='w-full mr-7'>
+    <main className='px-5 flex'>
+      <div className='w-full mr-7 mt-32'>
         <Title />
         <Content />
       </div>
@@ -57,7 +44,7 @@ function MainContent () {
           )}
         />
       )}
-    </section>
+    </main>
   )
 }
 

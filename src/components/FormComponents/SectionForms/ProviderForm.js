@@ -8,8 +8,7 @@ import {
 import { AppContext } from '../../../app/AppContext'
 import FormButton from '../../Buttons/FormButton'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
-import FormInput from '../FormInput'
-import FormLabel from '../FormLabel'
+import InputLabel from '../InputLabel'
 
 function ProviderForm ({ submitInfo, data }) {
   const { form, setForm, formState } = useContext(AppContext)
@@ -77,42 +76,33 @@ function ProviderForm ({ submitInfo, data }) {
       {isLoaded && (
         <>
           <div className='flex flex-wrap justify-center' id='form'>
-            <div>
-              <FormLabel text='Nombre del Proveedor:' />
-              <FormInput
-                name='name'
-                type='text'
-                specialChange={(event) =>
-                  setForm({ ...form, name: event.target.value })}
-              />
-            </div>
-            <div>
-              <FormLabel text='Email:' />
-              <FormInput
-                name='email'
-                type='text'
-                specialChange={(event) =>
-                  setForm({ ...form, email: event.target.value })}
-              />
-            </div>
-            <div>
-              <FormLabel text='Telefono:' />
-              <FormInput
-                name='phone'
-                type='phone'
-                specialChange={(event) =>
-                  setForm({ ...form, phone: event.target.value })}
-              />
-            </div>
-            <div>
-              <FormLabel text='Telefono 2:' />
-              <FormInput
-                name='phone2'
-                type='phone'
-                specialChange={(event) =>
-                  setForm({ ...form, phone2: event.target.value })}
-              />
-            </div>
+            <InputLabel
+              text='Nombre del Proveedor:'
+              name='name'
+              type='text'
+              specialChange={(event) =>
+                setForm({ ...form, name: event.target.value })}
+            />
+            <InputLabel
+              text='Email:' name='email'
+              type='text'
+              specialChange={(event) =>
+                setForm({ ...form, email: event.target.value })}
+            />
+            <InputLabel
+              text='Telefono:'
+              name='phone'
+              type='phone'
+              specialChange={(event) =>
+                setForm({ ...form, phone: event.target.value })}
+            />
+            <InputLabel
+              text='Telefono 2:'
+              name='phone2'
+              type='phone'
+              specialChange={(event) =>
+                setForm({ ...form, phone2: event.target.value })}
+            />
             <h3 className='basis-full'>Laboratorios:</h3>
             {form.labs.map((lab, index) => (
               <div className='flex gap-10 items-center' key={index}>
@@ -121,7 +111,7 @@ function ProviderForm ({ submitInfo, data }) {
                   className='flex flex-wrap border border-gray-400 rounded-lg mb-6'
                 >
                   <div>
-                    <FormLabel text='Nombre' />
+                    <label>Nombre:</label>
                     <input
                       id={`name-${index}`}
                       name='labName'

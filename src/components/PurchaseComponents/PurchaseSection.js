@@ -52,7 +52,7 @@ function PurchaseSection () {
   }, [])
 
   return (
-    <div className='flex flex-col h-full w-68 pt-32 px-5 gap-20 items-center justify-center'>
+    <main className='flex flex-col h-full w-68 pt-32 px-5 gap-20 items-center justify-center'>
       {(error || confirmation) && (
         <NewEntrance
           text={error || confirmation}
@@ -111,7 +111,7 @@ function PurchaseSection () {
         </div>
       )}
       {modal.showModal && <PurchaseModal name={modal.name} id={modal.id} />}
-    </div>
+    </main>
   )
 }
 

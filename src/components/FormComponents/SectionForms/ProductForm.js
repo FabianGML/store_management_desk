@@ -1,10 +1,9 @@
 import React, { useEffect, useContext } from 'react'
 import { AppContext } from '../../../app/AppContext'
 import FormButton from '../../Buttons/FormButton'
-import FormInput from './../FormInput'
-import Label from '../FormLabel'
 import FormSelect from './../FormSelect'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
+import InputLabel from '../InputLabel'
 
 function ProductForm ({ submitInfo, data }) {
   const { form, setForm, formState } = useContext(AppContext)
@@ -46,14 +45,11 @@ function ProductForm ({ submitInfo, data }) {
     >
       <div className='flex flex-wrap justify-center w-11/12'>
         {formInputs.map((input) => (
-          <div key={input[0]}>
-            <Label text={`${input[0]}:`} />
-            <FormInput name={input[1]} type={input[2]} />
-          </div>
+          <InputLabel text={`${input[0]}:`} name={input[1]} type={input[2]} key={input[0]} />
         ))}
 
         <div>
-          <Label text='Imagen' />
+          <label>Imagen:</label>
           <input
             name='image'
             type='file'
@@ -71,14 +67,13 @@ function ProductForm ({ submitInfo, data }) {
             }}
           />
         </div>
-
         <div>
-          <Label text='Laboratorio' />
+          <label>Laboratorio</label>
           <FormSelect name='labId' handleChange={handleChange} />
         </div>
 
         <div>
-          <Label text='Descripcion' />
+          <label>Descripcion:</label>
           <textarea
             name='description'
             className='border border-black h-32 m-5 w-64 p-2'

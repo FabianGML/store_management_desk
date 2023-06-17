@@ -9,6 +9,7 @@ import MainContent from '../components/MainContent/MainContent'
 import sections from './sections'
 import IndividualSection from '../components/Individual_Items/individualSections/IndividualSection'
 import PurchaseSection from '../components/PurchaseComponents/PurchaseSection'
+import SaleSection from '../components/SalesComponents/SaleSection'
 
 function App () {
   return (
@@ -25,6 +26,7 @@ function App () {
 
         <Routes>
           <Route path='/' element={<PurchaseSection />} />
+          <Route path='/ventas' element={<SaleSection />} />
           <Route path='/productos' element={<MainContent />} />
           <Route path='/productos/:id' element={<IndividualSection />} />
           <Route path='/pedidos' element={<MainContent />} />
