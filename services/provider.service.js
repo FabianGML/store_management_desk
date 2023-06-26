@@ -2,9 +2,6 @@ const boom = require('@hapi/boom')
 const { Op } = require('sequelize')
 
 const { models } = require('./../libs/sequelize')
-const ProductService = require('./product.service')
-
-const productService = new ProductService()
 
 class ProviderService {
   /*
@@ -95,8 +92,7 @@ class ProviderService {
     })
     await this.addLabs(data.labs, newProvider.dataValues.id)
 
-    await this.autoAddProdProv(newProvider.id)
-
+    await this.addProdProv(newProvider.id)
     return `Proveedor ${newProvider.name} agregado correctamente`
   }
 
@@ -252,23 +248,41 @@ class ProviderService {
     }
   }
 
-  async addProdProv (providerId, data) {
-    const provider = await this.getOneProvider(providerId)
-    const products = []
+  async addProdProv (providerId) {
+    const labs = await models.LabProvider.findAll({
+      where: { providerId }
+    })
 
-    for (const productProv of data.productsProv) {
-      /* Making sure the product actually exist in the DB */
-      const product = await productService.getOneProduct(productProv.productId)
-      /* If the product does exist then we push it into the array, if it's not, we discard it */
-      if (product) {
-        products.push(productProv)
+    const labsIds = labs.map((lab) => lab.labId)
+
+    const providerProducts = await models.ProductProvider.findAll({
+      where: {
+        providerId
+      },
+      attributes: ['productId']
+    })
+
+    const existingProductIds = providerProducts.map(product => product.productId)
+
+    const newProducts = await models.Product.findAll({
+      where: {
+        labId: {
+          [Op.in]: labsIds
+        },
+        id: {
+          [Op.notIn]: existingProductIds
+        }
       }
-      productProv.providerId = provider.dataValues.id
+    })
+    const productProviders = newProducts.map(product => ({
+      productId: product.id,
+      providerId
+    }))
+
+    if (productProviders.length > 0) {
+      await models.ProductProvider.bulkCreate(productProviders)
     }
-    await models.ProductProvider.bulkCreate(products)
-    return {
-      message: `Productos agregados correctamente a ${provider.name}`
-    }
+    return 'Productos añadidos correctamente'
   }
 }
 

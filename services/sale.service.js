@@ -4,13 +4,29 @@ const { Op } = require('sequelize')
 const { models } = require('./../libs/sequelize')
 
 class SaleService {
-  getDate () {
-    const fechaActual = new Date()
-    const year = fechaActual.getFullYear()
-    const month = String(fechaActual.getMonth() + 1).padStart(2, '0')
-    const day = String(fechaActual.getDate()).padStart(2, '0')
-    const fechaFormateada = `${year}-${month}-${day}`
-    return fechaFormateada
+  getCurrentDatesAsString () {
+    const currentDate = new Date()
+    const year = currentDate.getFullYear()
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0')
+    const day = String(currentDate.getDate()).padStart(2, '0')
+    const date = `${year}-${month}-${day}`
+
+    const monthStartDate = `${year}-${month}-01`
+
+    const lastDayOfMonth = new Date(year, month, 0).getDate()
+    const monthEndDate = `${year}-${month}-${String(lastDayOfMonth).padStart(2, '0')}`
+
+    const currentDay = currentDate.getDay()
+    const startOfWeek = new Date(currentDate)
+    startOfWeek.setDate(currentDate.getDate() - currentDay + (currentDay === 0 ? -6 : 1))
+
+    const endOfWeek = new Date(currentDate)
+    endOfWeek.setDate(currentDate.getDate() - currentDay + (currentDay === 0 ? 0 : 6))
+
+    const formattedStartOfWeek = startOfWeek.toISOString().split('T')[0]
+    const formattedEndOfWeek = endOfWeek.toISOString().split('T')[0]
+
+    return { date, monthStartDate, monthEndDate, formattedStartOfWeek, formattedEndOfWeek }
   }
 
   async getAllSales () {
@@ -26,20 +42,20 @@ class SaleService {
     return sale
   }
 
-  async createSale (data, userId) {
+  async createSale (data) {
     const sale = await models.Sale.create({
-      total: 0.1,
-      userId
+      total: 0.1
     })
     const prices = []
     const items = []
-    for (const item of data.items) {
+    for (const item of data) {
+      console.log('item---------------', item)
       const product = await models.Product.findByPk(item.productId)
       if (product) {
-        item.unitPrice = product.price
-        item.TotalUnit = item.unitPrice * item.amount
+        item.TotalUnit = item.total
         item.saleId = sale.id
-        prices.push(item.TotalUnit)
+        console.log('item.total-----------', item.total)
+        prices.push(item.total)
         items.push(item)
         await models.Product.update({
           ...product,
@@ -47,6 +63,7 @@ class SaleService {
         }, { where: { id: item.productId } })
       }
     }
+    console.log('items-----------', items)
     await models.SaleProduct.bulkCreate(items)
     const total = prices.reduce((prevValue, currentValue) => prevValue + currentValue, 0)
     console.log(total)
@@ -57,7 +74,11 @@ class SaleService {
   }
 
   async getSalesBetweenDates (dates) {
-    const date = this.getDate()
+    const { date, monthStartDate, monthEndDate, formattedStartOfWeek, formattedEndOfWeek } = this.getCurrentDatesAsString()
+    console.log('sartDate', monthStartDate)
+    console.log('endDate', monthEndDate)
+    console.log('startWeekDay', formattedStartOfWeek)
+    console.log('endWeekDay', formattedEndOfWeek)
     const tableInfo = await models.Sale.findAll({
       where: {
         saleDate: {
@@ -67,6 +88,7 @@ class SaleService {
       order: [['sale_date', 'DESC']],
       raw: true
     })
+
     const dayTotal = await models.Sale.sum('total', {
       where: {
         saleDate: {
@@ -74,9 +96,26 @@ class SaleService {
         }
       }
     })
+    const weekTotal = await models.Sale.sum('total', {
+      where: {
+        saleDate: {
+          [Op.between]: [`${formattedStartOfWeek}T00:00:00-06:00`, `${formattedEndOfWeek}T23:59:59-06:00`]
+        }
+      }
+    })
+    const monthTotal = await models.Sale.sum('total', {
+      where: {
+        saleDate: {
+          [Op.between]: [`${monthStartDate}T00:00:00-06:00`, `${monthEndDate}T23:59:59-06:00`]
+        }
+      }
+    })
+    console.log(`date------------- ${date}`)
     return {
       tableInfo,
-      dayTotal
+      dayTotal,
+      weekTotal,
+      monthTotal
     }
   }
 }

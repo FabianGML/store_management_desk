@@ -1,17 +1,13 @@
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { AppContext } from '../../../app/AppContext'
 import FormButton from '../../Buttons/FormButton'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
 import InputLabel from '../InputLabel'
+import useSetFormIfData from '../../hooks/useSetFormIfData'
 
 function LabForm ({ submitInfo, data }) {
-  const { formState, setForm } = useContext(AppContext)
-
-  useEffect(() => {
-    if (data) {
-      setForm(data)
-    }
-  }, [])
+  const { formState } = useContext(AppContext)
+  useSetFormIfData(data)
 
   return (
     <form

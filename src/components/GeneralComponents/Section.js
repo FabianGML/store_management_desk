@@ -19,7 +19,7 @@ function Section ({ svg, text, path }) {
     setConfirmation('')
     setFormState({
       loading: false,
-      response: {}
+      response: ''
     })
     setModal(false)
     setSearchValue('')

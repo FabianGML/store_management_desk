@@ -7,6 +7,7 @@ import InfoBlock from '../InfoBlock'
 import IndividualDataTable from './IndividualDataTable'
 import Modal from '../../../Modal/Modal'
 import UpdateButton from '../UpdateButton'
+import AddButton from '../AddButton'
 
 function IndividualProvider ({ id, handleUpdate, individualInfo }) {
   const { modal, setModal } = useContext(AppContext)
@@ -30,9 +31,6 @@ function IndividualProvider ({ id, handleUpdate, individualInfo }) {
             {individualInfo.name}
           </h2>
           <InfoBlock labelText='Telefono:' info={individualInfo.phone} />
-          {individualInfo.phone2 && (
-            <InfoBlock labelText='Telefono2:' info={individualInfo.phone2} />
-          )}
           <InfoBlock labelText='Correo:' info={individualInfo.email} />
 
           <h3 className='text-4xl font-semibold text-center mt-12'>
@@ -57,6 +55,7 @@ function IndividualProvider ({ id, handleUpdate, individualInfo }) {
       </div>
       <div className='w-full flex justify-center mt-12 gap-10 mb-24'>
         <UpdateButton setModal={setModal} />
+        <AddButton id={id} />
       </div>
       {modal.showModal && modal.modalType === 'update' && (
         <Modal

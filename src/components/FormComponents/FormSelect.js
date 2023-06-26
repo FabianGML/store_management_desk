@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { AppContext } from '../../app/AppContext'
 import Select from 'react-select'
 
-function FormSelect ({ name }) {
+function FormSelect ({ name, optionsData }) {
   const { form, setForm, formData } = useContext(AppContext)
 
   function handleSelectInfo (e) {
@@ -12,7 +12,7 @@ function FormSelect ({ name }) {
     })
   }
   if (formData) {
-    var optionsData = formData.map(row => { return { value: row.id, label: row.name } })
+    optionsData = formData.map(row => { return { value: row.id, label: row.name } })
   }
 
   return (

@@ -170,6 +170,17 @@ async function getSale (event, dates) {
   }
 }
 
+async function addProducts (event, id) {
+  try {
+    const providerService = new ProviderService()
+    if (providerService) {
+      return await providerService.addProdProv(id)
+    }
+  } catch (error) {
+
+  }
+}
+
 function mainWindow () {
   const mainWin = new BrowserWindow({
     width: 1000,
@@ -186,6 +197,7 @@ function mainWindow () {
 app.whenReady().then(() => {
   ipcMain.handle('info', getInfo)
   ipcMain.handle('formData', sendFormInfo)
+  ipcMain.handle('createEntrance', createNewEntrance)
   ipcMain.handle('sendedForm', createNewEntrance)
   ipcMain.handle('individualData', getOneDataById)
   ipcMain.handle('deleteEntrance', deleteEntrance)
@@ -194,6 +206,7 @@ app.whenReady().then(() => {
   ipcMain.handle('productSelect', getProductSelect)
   ipcMain.handle('createSale', createSale)
   ipcMain.handle('getSales', getSale)
+  ipcMain.handle('addProducts', addProducts)
   mainWindow()
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) mainWindow()

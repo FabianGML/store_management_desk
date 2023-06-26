@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import Content from './Content'
 import Title from '../GeneralComponents/Title'
 import Modal from '../../Modal/Modal'
@@ -7,15 +7,43 @@ import OrderForm from '../FormComponents/SectionForms/OrderForm'
 import ProviderForm from '../FormComponents/SectionForms/ProviderForm'
 import LabForm from '../FormComponents/SectionForms/LabForm'
 import { AppContext } from '../../app/AppContext'
-import useSubmitForm from '../hooks/useSubmitForm'
+import { useNavigate } from 'react-router-dom'
+import NewEntrance from '../FormComponents/NewEntrance'
 
 function MainContent () {
-  const { modal } = useContext(AppContext)
-  const handleSubmit = useSubmitForm()
+  const { currentSection, form, setForm, formState, setFormState, setModal, modal } = useContext(AppContext)
+  const navigate = useNavigate()
+
+  const handleSubmit = async () => {
+    try {
+      const response = await window.Data.createEntrance(currentSection, form)
+      navigate(`/${currentSection}`)
+      setModal(false)
+      setFormState({
+        loading: false
+      })
+      if (response) {
+        setFormState({
+          ...formState,
+          response
+        })
+        setForm({})
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    handleSubmit()
+  }, [])
 
   return (
-    <main className='px-5 flex'>
+    <main className='px-5 flex justify-center'>
       <div className='w-full mr-7 mt-32'>
+        <div className='flex justify-center w-full mb-5'>
+          {formState.response && <NewEntrance text={formState.response} />}
+        </div>
         <Title />
         <Content />
       </div>

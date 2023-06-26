@@ -1,73 +1,42 @@
-import {
-  useState,
-  useContext,
-  useEffect,
-  Fragment,
-  useLayoutEffect
-} from 'react'
+import { useContext } from 'react'
 import { AppContext } from '../../../app/AppContext'
 import FormButton from '../../Buttons/FormButton'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
 import InputLabel from '../InputLabel'
+import useSetFormIfData from '../../hooks/useSetFormIfData'
 
 function ProviderForm ({ submitInfo, data }) {
   const { form, setForm, formState } = useContext(AppContext)
+  /*
+  ---------------------------------------------------
+  CustomHook to handle the submit and items change, add and remove
+  */
+  const {
+    handleSubmit,
+    handleInputChange,
+    handleAddItem,
+    handleRemoveItem,
+    setComplexFormData,
+    isLoaded
+  } = useSetFormIfData(data, 'labs')
 
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [formUpdated, setFormUpdated] = useState(false)
-
-  function handleInputChange (event, index) {
-    const { name, value } = event.target
-    const labs = [...form.labs]
-    labs[index][name] = value
-    setForm({ ...form, labs })
-  }
-
-  function handleAddItem () {
-    const newLab = { labName: '' }
-    setForm({ ...form, labs: [...form.labs, newLab] })
-  }
-
-  function handleSubmit () {
-    setFormUpdated(true)
-  }
-
-  function handleRemoveLab (index) {
-    const labs = [...form.labs]
-    labs.splice(index, 1)
-    setForm({ ...form, labs })
-  }
-
-  useLayoutEffect(() => {
-    if (data) {
-      setForm({
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        phone2: data.phone2,
-        labs: data.labs
-      })
-      setIsLoaded(true)
-    } else {
-      setForm({
-        name: '',
-        email: '',
-        phone: '',
-        phone2: '',
-        labs: [{ labName: '' }]
-      })
-      setIsLoaded(true)
+  setComplexFormData(
+    data
+      ? {
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          labs: data.labs
+        }
+      : null, {
+      name: '',
+      email: '',
+      phone: '',
+      labs: [{ labName: '' }]
     }
-  }, [])
-
-  useEffect(() => {
-    if (formUpdated) {
-      submitInfo()
-      setFormUpdated(false)
-    }
-  }, [handleSubmit])
-
+    , submitInfo)
+  // -----------------------------------------------------
   return (
     <form
       className='p-5 w-full h-full overflow-scroll flex flex-col items-center'
@@ -96,13 +65,6 @@ function ProviderForm ({ submitInfo, data }) {
               specialChange={(event) =>
                 setForm({ ...form, phone: event.target.value })}
             />
-            <InputLabel
-              text='Telefono 2:'
-              name='phone2'
-              type='phone'
-              specialChange={(event) =>
-                setForm({ ...form, phone2: event.target.value })}
-            />
             <h3 className='basis-full'>Laboratorios:</h3>
             {form.labs.map((lab, index) => (
               <div className='flex gap-10 items-center' key={index}>
@@ -124,7 +86,7 @@ function ProviderForm ({ submitInfo, data }) {
                 </div>
                 <div
                   className='w-12 h-6 rounded-full mb-6 bg-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-400 hover:text-gray-700 cursor-pointer'
-                  onClick={() => handleRemoveLab(index)}
+                  onClick={() => handleRemoveItem(index)}
                 >
                   <span className='text-2xl font-bold leading-none'>-</span>
                 </div>
@@ -133,7 +95,7 @@ function ProviderForm ({ submitInfo, data }) {
           </div>
           <div
             className='w-12 rounded-full mb-6 bg-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-400 hover:text-gray-700 cursor-pointer'
-            onClick={handleAddItem}
+            onClick={() => handleAddItem({ labName: '' })}
           >
             <span className='text-2xl font-bold leading-none'>+</span>
           </div>

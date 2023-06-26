@@ -20,8 +20,8 @@ function PurchaseSection () {
     calculateTotal
   } = useContext(AppContext)
   const columns = [
-    ['Producto', 'Cantidad', 'Precio Unitario', 'Importe', 'Editar/Eliminar'],
-    ['name', 'amount', 'unitPrice', 'total', 'delete']
+    ['Producto', 'Cantidad', 'Precio Unitario', 'descuento', 'Importe', 'Editar/Eliminar'],
+    ['name', 'amount', 'unitPrice', 'discount', 'total', 'delete']
   ]
   const [error, setError] = useState('')
 

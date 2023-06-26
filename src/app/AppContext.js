@@ -14,7 +14,7 @@ function AppProvider (props) {
   const [formState, setFormState] = useState({
     // State use to set the loading screen after a form is send to the backend
     loading: false,
-    response: {}
+    response: ''
   })
   const [modal, setModal] = useState(false) // State use to set if the current modal should be close or open
   const [shoppingCart, setShoppingCart] = useState([]) // State used to controle the shoppingCart either we change of section or not

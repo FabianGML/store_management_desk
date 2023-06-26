@@ -22,16 +22,18 @@ class ProductService {
         console.error('Error al mover el archivo:', err)
       } else {
         console.log('Archivo movido exitosamente')
+        // change the file name to the product name
+        const newFilePath = path.join(imageRoute, newName)
+        fs.rename(destinationPath, newFilePath, (err) => {
+          if (err) {
+            console.error('Error al reenombrar el archivo:', err)
+          } else {
+            console.log('Archivo reenmobrado exitosamente')
+          }
+        })
       }
     })
-    // change the file name to the product name
-    fs.rename(destinationPath, path.join(imageRoute, newName), (err) => {
-      if (err) {
-        console.error('Error al mover el archivo:', err)
-      } else {
-        console.log('Archivo movido exitosamente')
-      }
-    })
+
     return newName
   }
 

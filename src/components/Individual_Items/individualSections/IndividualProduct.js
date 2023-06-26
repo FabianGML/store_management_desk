@@ -19,8 +19,6 @@ function IndividualProduct ({ handleUpdate, individualInfo }) {
     expiration2,
     image
   } = individualInfo
-  // const [imageModule, setImageModule] = useState()
-  console.log(image)
 
   const images = require.context('../../../images', true)
 

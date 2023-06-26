@@ -19,10 +19,6 @@ const SaleSchema = {
     type: DataTypes.DATE,
     defaultValue: Sequelize.NOW,
     field: 'sale_date'
-  },
-  discount: {
-    type: DataTypes.STRING,
-    allowNull: true
   }
 }
 

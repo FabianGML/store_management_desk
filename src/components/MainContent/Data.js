@@ -1,7 +1,6 @@
 import { useContext, useEffect, Fragment } from 'react'
 import Row from '../GeneralComponents/Row'
 import { AppContext } from '../../app/AppContext'
-import LoadingSpinner from '../GeneralComponents/LoadingSpinner'
 
 function Data () {
   const {
@@ -26,7 +25,7 @@ function Data () {
   }, [currentSection])
 
   if (displayedInfo.length === 0 && searchValue.length === 0) {
-    return <LoadingSpinner />
+    return <p className='w-full text-xl text-center border border-red-600'>No hay {currentSection}</p>
   }
   if (displayedInfo.length === 0 && searchValue.length > 0) {
     return (

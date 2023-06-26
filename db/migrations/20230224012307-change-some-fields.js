@@ -1,7 +1,7 @@
-'use strict';
-const { DataTypes } = require('sequelize');
-const { PRODUCT_TABLE } = require('./../models/product.model');
-const { SALE_TABLE } = require('./../models/sale.model');
+'use strict'
+const { DataTypes } = require('sequelize')
+const { PRODUCT_TABLE } = require('./../models/product.model')
+const { SALE_TABLE } = require('./../models/sale.model')
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,14 +9,13 @@ module.exports = {
     await queryInterface.removeColumn(PRODUCT_TABLE, 'line')
     await queryInterface.addColumn(PRODUCT_TABLE, 'image', {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     })
     await queryInterface.addColumn(SALE_TABLE, 'discount', {
-      type: DataTypes.STRING,
-      allowNull: true,
+      type: Sequelize.DataTypes.STRING,
+      allowNull: true
     })
   },
-
 
   async down (queryInterface, Sequelize) {
     await queryInterface.addColumn(PRODUCT_TABLE, 'line', {
@@ -26,6 +25,5 @@ module.exports = {
     })
     await queryInterface.removeColumn(PRODUCT_TABLE, 'image')
     await queryInterface.removeColumn(SALE_TABLE, 'discount')
-
   }
-};
+}

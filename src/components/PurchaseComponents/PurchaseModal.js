@@ -7,7 +7,8 @@ import { AppContext } from '../../app/AppContext'
 function PurchaseModal ({ name, id }) {
   const { modal, setModal, total, form, setForm } = useContext(AppContext)
   return createPortal(
-    <div className='flex flex-col fixed modal justify-center items-center border-4 border-slate-500 bg-slate-200 mx-72 my-56'>
+    <div className='flex flex-col fixed modal justify-center items-center border-4 border-slate-500 bg-slate-200 mx-72 my-56 py-5'>
+      {/* ------------------------------------------------------------------ */}
       {modal.modalType === 'delete' && (
         <>
           <p className='text-xl text-center'>
@@ -20,7 +21,7 @@ function PurchaseModal ({ name, id }) {
           </div>
         </>
       )}
-
+      {/* ------------------------------------------------------------------ */}
       {modal.modalType === 'create' && (
         <>
           <p className='text-2xl text-center'>{` Cobrar: $${total}`}</p>
@@ -39,16 +40,33 @@ function PurchaseModal ({ name, id }) {
           </div>
         </>
       )}
+      {/* ------------------------------------------------------------------ */}
       {modal.modalType === 'update' && (
         <>
           <p className='text-2xl text-center'>{` Cantidad actual: ${modal.amount}`}</p>
+          <label className='fold-bold text-lg'>Nueva cantidad del producto:</label>
           <input
+            name='amount'
             className='h-12 w-3/12 border-b-2 border-black bg-transparent text-xl text-center my-6 focus:outline-none'
             autoFocus
-            placeholder='Nueva cantidad...'
-            onChange={(e) => setForm(e.target.value)}
+            placeholder='5'
+            onChange={(e) => setForm({
+              ...form,
+              [e.target.name]: e.target.value
+            })}
           />
-          <div className=' flex gap-5 mt-7'>
+          <label className='fold-bold text-lg'>Descuento:</label>
+          <input
+            name='discount'
+            className='h-12 w-3/12 border-b-2 border-black bg-transparent text-xl text-center my-6 focus:outline-none'
+            autoFocus
+            placeholder='30%'
+            onChange={(e) => setForm({
+              ...form,
+              [e.target.name]: e.target.value
+            })}
+          />
+          <div className=' flex gap-5 mt-7 items-center'>
             <p>Quieres actualizar la cantidad?</p>
             <ConfirmationButton id={id} />
             <RejectButton setModal={setModal} id={id} />

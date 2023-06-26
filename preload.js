@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('Data', {
   getProduct: (form, shoppingCart) => ipcRenderer.invoke('getProduct', form, shoppingCart), // Search a product by its code bar
   productSelect: () => ipcRenderer.invoke('productSelect'), // Gets all the products to use them in sales section
   createSale: (items) => ipcRenderer.invoke('createSale', items), // Create sale
-  getSales: (dates) => ipcRenderer.invoke('getSales', dates) // Create sale
+  getSales: (dates) => ipcRenderer.invoke('getSales', dates), // Create sale
+  addProducts: (id) => ipcRenderer.invoke('addProducts', id)
 
 })

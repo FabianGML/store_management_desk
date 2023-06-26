@@ -33,11 +33,16 @@ function displayedInfoFunction (searchValue, info, section, setDisplayedInfo) {
 
 function displayProducts (searchedText, rowName, value) {
   if (value.ingredients === null) {
-    value.ingredients = 'sin Ingredientes'
+    value.ingredients = 'Sin Ingredientes'
   }
+  if (value.description === null) {
+    value.description = 'Sin Description'
+  }
+  console.log(value)
   const rowIngredients = value.ingredients.toLowerCase()
   const rowLab = value['lab.name'].toLowerCase()
-  if (rowName.includes(searchedText) || rowIngredients.includes(searchedText) || rowLab.includes(searchedText)) {
+  const rowDescription = value.description.toLowerCase()
+  if (rowName.includes(searchedText) || rowIngredients.includes(searchedText) || rowLab.includes(searchedText) || rowDescription.includes(searchedText)) {
     return value
   }
 }

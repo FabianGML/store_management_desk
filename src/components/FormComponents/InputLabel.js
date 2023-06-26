@@ -9,11 +9,11 @@ function InputLabel ({ text, name, type, specialChange, placeHolder }) {
       ...form,
       [e.target.name]: e.target.value
     })
-    console.log(form)
   }
 
   return (
     <div>
+      <label className='block'>{text}</label>
       <input
         type={type}
         className='h-12 border border-black m-5 pl-3'
@@ -22,7 +22,6 @@ function InputLabel ({ text, name, type, specialChange, placeHolder }) {
         onChange={specialChange || handleChange}
         placeholder={placeHolder || ''}
       />
-      <label className='block'>{text}</label>
     </div>
   )
 }

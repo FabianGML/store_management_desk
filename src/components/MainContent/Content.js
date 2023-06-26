@@ -5,10 +5,9 @@ import displayedInfoFunction from '../../helpers/displayedInfo'
 import TableInfo from './TableInfo'
 import { AppContext } from '../../app/AppContext'
 import getRowContents from '../../helpers/rowContents'
-import NewEntrance from '../FormComponents/NewEntrance'
 
 function Content () {
-  const { searchValue, setSearchValue, info, currentSection, setDisplayedInfo, confirmation } = useContext(AppContext)
+  const { searchValue, setSearchValue, info, currentSection, setDisplayedInfo } = useContext(AppContext)
   const rowContents = getRowContents(currentSection)[0]
 
   const onSearchValueChange = (event) => {
@@ -20,7 +19,6 @@ function Content () {
 
   return (
     <>
-      {confirmation && <NewEntrance text={confirmation} />}
       <Input
         searchValue={searchValue}
         onSearchValueChange={onSearchValueChange}

@@ -1,9 +1,10 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useContext } from 'react'
 import { AppContext } from '../../../app/AppContext'
 import FormButton from '../../Buttons/FormButton'
 import FormSelect from './../FormSelect'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
 import InputLabel from '../InputLabel'
+import useSetFormIfData from '../../hooks/useSetFormIfData'
 
 function ProductForm ({ submitInfo, data }) {
   const { form, setForm, formState } = useContext(AppContext)
@@ -32,11 +33,8 @@ function ProductForm ({ submitInfo, data }) {
     ['Caducidad', 'expiration', 'date']
   ]
 
-  useEffect(() => {
-    if (data) {
-      setForm(data)
-    }
-  }, [])
+  const { setBasicFormData } = useSetFormIfData(data)
+  setBasicFormData()
 
   return (
     <form
@@ -48,12 +46,12 @@ function ProductForm ({ submitInfo, data }) {
           <InputLabel text={`${input[0]}:`} name={input[1]} type={input[2]} key={input[0]} />
         ))}
 
-        <div>
+        <div className='flex gap-5 items-center m-5'>
           <label>Imagen:</label>
           <input
             name='image'
             type='file'
-            className='pt-5 w-72'
+            className='w-72'
             onChange={(e) => {
               const file = e.target.files[0]
               setForm({
@@ -67,12 +65,12 @@ function ProductForm ({ submitInfo, data }) {
             }}
           />
         </div>
-        <div>
+        <div className=''>
           <label>Laboratorio</label>
           <FormSelect name='labId' handleChange={handleChange} />
         </div>
 
-        <div>
+        <div className='flex items-center'>
           <label>Descripcion:</label>
           <textarea
             name='description'

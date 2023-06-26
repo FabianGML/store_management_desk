@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useMemo } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppContext } from '../../../app/AppContext'
 import IndividualProduct from './IndividualProduct'
@@ -31,7 +31,7 @@ function IndividualSection () {
 
   useEffect(() => {
     getIndividualData()
-  }, [currentSection, confirmation])
+  }, [confirmation])
 
   async function handleUpdate () {
     try {

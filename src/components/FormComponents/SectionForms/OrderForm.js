@@ -1,65 +1,43 @@
-import {
-  useState,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  Fragment
-} from 'react'
+import { useContext, Fragment } from 'react'
 import { AppContext } from '../../../app/AppContext'
 import FormButton from '../../Buttons/FormButton'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
 import FormSelect from './../FormSelect'
 import InputLabel from '../InputLabel'
+import useSetFormIfData from '../../hooks/useSetFormIfData'
 
 function OrderForm ({ submitInfo, data }) {
   const { form, setForm, formState } = useContext(AppContext)
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [formUpdated, setFormUpdated] = useState(false)
+  /*
+  ---------------------------------------------------
+  CustomHook to handle the submit and items change, add and remove
+  */
+  const {
+    handleSubmit,
+    handleInputChange,
+    handleAddItem,
+    handleRemoveItem,
+    setComplexFormData,
+    isLoaded
+  } = useSetFormIfData(data, 'items')
 
-  function handleInputChange (event, index) {
-    const { name, value } = event.target
-    const items = [...form.items]
-    items[index][name] = value
-    setForm({ ...form, items })
-  }
-
-  function handleAddItem () {
-    const newItem = { name: '', unitPrice: '', amount: '', expiration: '' }
-    setForm({ ...form, items: [...form.items, newItem] })
-  }
-
-  function handleRemoveItem (index) {
-    const items = [...form.items]
-    items.splice(index, 1)
-    setForm({ ...form, items })
-  }
-
-  function handleSubmit () {
-    setFormUpdated(true)
-  }
-
-  useLayoutEffect(() => {
-    if (data) {
-      setForm(data)
-      setIsLoaded(true)
-    } else {
-      setForm({
-        providerId: '',
-        isPayed: false,
-        orderArrive: '',
-        items: [{ name: '', unitPrice: '', amount: '', expiration: '' }]
-      })
-      setIsLoaded(true)
+  setComplexFormData(
+    data
+      ? {
+          id: data.id,
+          providerId: data.providerId,
+          isPayed: data.isPayed,
+          orderArrive: data.orderArrive,
+          items: data.items
+        }
+      : null, {
+      providerId: '',
+      isPayed: false,
+      orderArrive: '',
+      items: [{ name: '', unitPrice: '', amount: '', expiration: '' }]
     }
-  }, [])
-
-  useEffect(() => {
-    if (formUpdated) {
-      submitInfo()
-      setFormUpdated(false)
-    }
-  }, [handleSubmit])
-
+    , submitInfo)
+  // -----------------------------------------------------
   return (
     <form
       onSubmit={handleSubmit}
@@ -97,11 +75,10 @@ function OrderForm ({ submitInfo, data }) {
               <Fragment key={index}>
                 <div className='flex gap-10 items-center' key={index}>
                   <div
-                    className='flex flex-wrap border border-gray-400 rounded-lg mb-6'
+                    className='flex flex-wrap justify-center border border-gray-400 rounded-lg mb-6'
                   >
                     <div>
                       <label>Nombre:</label>
-                      {/* <FormInput name='name' type='text' specialChange={event => handleInputChange(event, index) } /> */}
                       <input
                         id={`name-${index}`}
                         name='name'
@@ -125,7 +102,6 @@ function OrderForm ({ submitInfo, data }) {
                     </div>
                     <div>
                       <label>Cantidad:</label>
-                      {/* <FormInput name='amount' type='number' specialChange={event => handleInputChange(event, index) } /> */}
                       <input
                         id={`amount-${index}`}
                         name='amount'
@@ -138,7 +114,6 @@ function OrderForm ({ submitInfo, data }) {
                     </div>
                     <div>
                       <label>Fecha de Caducidad:</label>
-                      {/* <FormInput name='expiration' type='date' specialChange={event => handleInputChange(event, index) } /> */}
                       <input
                         id={`expiration-${index}`}
                         name='expiration'
@@ -161,7 +136,7 @@ function OrderForm ({ submitInfo, data }) {
           </div>
           <div
             className='w-12 h-6 rounded-full mb-6 bg-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-400 hover:text-gray-700 cursor-pointer'
-            onClick={handleAddItem}
+            onClick={() => handleAddItem({ name: '', unitPrice: '', amount: '', expiration: '' })}
           >
             <span className='text-2xl font-bold leading-none'>+</span>
           </div>

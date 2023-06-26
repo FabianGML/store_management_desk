@@ -34,11 +34,19 @@ function ConfirmationButton ({ id }) {
 
   // ------------------- Create a sale in Db ------------------ //
   async function createSale () {
-    const data = shoppingCart.map((item) => ({
-      productId: item.id,
-      amount: item.amount
-    }))
-    await window.Data.createSale({ items: data }).then((result) => {
+    const data = shoppingCart.map((item) => {
+      const { id, amount, unitPrice, total } = item
+      const discount = item.discount || 0
+      return {
+        productId: id,
+        amount,
+        unitPrice,
+        total,
+        discount
+      }
+    })
+    console.log(data)
+    await window.Data.createSale(data).then((result) => {
       setConfirmation(result)
     })
     setModal(false)
@@ -50,8 +58,20 @@ function ConfirmationButton ({ id }) {
   function handleUpdate () {
     for (const item of shoppingCart) {
       if (item.id === modal.id) {
-        item.amount = form
-        item.total = item.unitPrice * form
+        if (form.amount) {
+          const discount = item.discount
+          const sumOfItems = item.unitPrice * form.amount
+          item.amount = form.amount
+          discount ? item.total = sumOfItems - (sumOfItems * (discount / 100)) : item.total = sumOfItems
+        }
+        if (form.discount) {
+          console.log('estoy entrando')
+          item.discount = form.discount
+          item.total = (item.unitPrice - (item.unitPrice * (form.discount / 100))) * item.amount
+        }
+        if (!form.amount && !form.discount) {
+          return
+        }
       }
     }
     calculateTotal(shoppingCart)
