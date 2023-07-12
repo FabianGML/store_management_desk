@@ -1,6 +1,7 @@
 const boom = require('@hapi/boom')
 
 const { models } = require('./../libs/sequelize')
+const nameFormat = require('./helpers/nameFormat')
 
 class OrderService {
   /*
@@ -9,11 +10,10 @@ class OrderService {
   "productExist" method, this method returns an array of "clean" items ready to create an entrance to OrderProduct Table
   ------------------------------------------------------------------------------------------------------------------------------------
    */
-  async productExist (data, orderId) {
+  async productExist (data, orderId, providerId) {
     const items = []
     for (const item of data) {
-      let name = item.name
-      name = name[0].toUpperCase() + name.substring(1).toLowerCase().trimEnd()
+      const name = nameFormat(item.name)
       const product = await models.Product.findOne({ where: { name } })
 
       /* If the product the user passed doesn't exist, we create it with some defualts values  */
@@ -22,11 +22,14 @@ class OrderService {
           name,
           price: 0.1,
           stock: item.amount,
-          labId: 2,
-          expiration: item.expiration,
-          userId: 2
+          labId: 1,
+          expiration: item.expiration
         })
         item.productId = newProduct.id
+        await models.ProductProvider.create({
+          productId: newProduct.id,
+          providerId
+        })
       }
 
       /* If the product actualy exist in the db, we update it wheter the changes the user wanted */
@@ -36,7 +39,7 @@ class OrderService {
             ? item.expiration
             : product.expiration
         product.update({
-          stock: product.stock + item.amount, // Probable falla
+          stock: Number(product.stock) + Number(item.amount),
           expiration,
           expiration2: product.expiration
         })
@@ -101,16 +104,16 @@ class OrderService {
 
   async createOrder (data) {
     /*
-            Making sure the provider actually exist in the database
-         */
+      Making sure the provider actually exist in the database
+    */
     const provider = await models.Provider.findByPk(data.providerId)
     if (!provider) {
       throw boom.badRequest('El proveedor no existe')
     }
 
     /*
-            Multiplying the amount of products that arrived in order to get the totalPrice of each product
-         */
+      Multiplying the amount of products that arrived in order to get the totalPrice of each product
+    */
     data.items.forEach((item) => {
       item.totalPrice = item.amount * item.unitPrice
     })
@@ -119,7 +122,7 @@ class OrderService {
       .map(({ totalPrice }) => totalPrice)
       .reduce((total, price) => total + price, 0)
 
-    // Create the order first as to get the order id that we need to pass it to the order_product table
+    // Create the order first to get the order id that we need to create the order_product entrance
     const order = await models.Order.create({
       providerId: data.providerId,
       orderArrive: data.orderArrive,
@@ -127,7 +130,7 @@ class OrderService {
       total
     })
 
-    await this.addItem(data.items, order.id)
+    await this.addItem(data.items, order.id, data.proverId)
 
     return `Orden numero ${order.id} agregado exitosamente!`
   }
@@ -151,7 +154,7 @@ class OrderService {
     // ----------------------------------------------------------------------------------
 
     for (const itemData of data.items) {
-      await this.updateItem(orderId, itemData)
+      await this.updateItem(orderId, itemData, data.providerId)
     }
     return `¡La orden ${orderId} cambio correctamente!`
   }
@@ -169,7 +172,7 @@ class OrderService {
     await models.OrderProduct.bulkCreate(product)
   }
 
-  async updateItem (orderId, itemData) {
+  async updateItem (orderId, itemData, providerId) {
     const product = await models.Product.findByPk(itemData.productId)
     if (!product) {
       throw boom.badRequest('El producto no existe')
@@ -186,8 +189,7 @@ class OrderService {
         Checking if the name passed by the body and the name in the db matches
     -----------------------------------------------------------------------------
     */
-    let name = itemData.name
-    name = name[0].toUpperCase() + name.substring(1).toLowerCase().trim()
+    const name = nameFormat(itemData.name)
 
     /* If the name passed by the user is different, we need to remove the incoming amount to the product stock  */
     if (name !== product.dataValues.name.trim()) {
@@ -196,7 +198,7 @@ class OrderService {
         stock
       })
       const itemDataAsArray = [...itemData]
-      const item = await this.productExist(itemDataAsArray, orderId) // this checks if the product exist or not
+      const item = await this.productExist(itemDataAsArray, orderId, providerId) // this checks if the product exist or not
       await models.OrderProduct.update({
         item,
         where: { id: orderProduct.dataValues.id }

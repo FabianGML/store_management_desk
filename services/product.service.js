@@ -3,6 +3,7 @@ const path = require('path')
 const fs = require('fs')
 
 const { models } = require('./../libs/sequelize')
+const nameFormat = require('./helpers/nameFormat')
 
 class ProductService {
   constructor () {
@@ -80,8 +81,7 @@ class ProductService {
   }
 
   async createProduct (data) {
-    let name = data.name
-    name = name[0].toUpperCase() + name.substring(1).toLowerCase().trimEnd()
+    const name = nameFormat(data.name)
     /*
     if there is an image, we store it in ./images and change the file name
     to the product name
@@ -98,8 +98,7 @@ class ProductService {
   }
 
   async updateProduct (id, data) {
-    let name = data.name
-    name = name[0].toUpperCase() + name.substring(1).toLowerCase().trimEnd()
+    const name = nameFormat(data.name)
     const product = await this.getOneProduct(id)
     if (data.image) {
       this.imagePath = this.handleImage(data.image, name)

@@ -61,7 +61,7 @@ async function getInfo (event, section) {
   }
 }
 
-async function sendFormInfo (event, section) {
+async function sendPrimarySelectData (event, section) {
   try {
     const serviceData = services[section]
     if (serviceData) {
@@ -125,6 +125,19 @@ async function updateEntrance (event, section, id, data) {
   }
 }
 
+async function sendSecondarySelectData (event, section) {
+  try {
+    if (section === 'Proveedores' || section === 'Pedidos') {
+      const products = getProductSelect()
+      return products
+    } else {
+      getLabsSelect()
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 async function getProductByCode (event, form, shoppingCart) {
   try {
     const productService = new ProductService()
@@ -142,6 +155,17 @@ async function getProductSelect (event) {
     const productService = new ProductService()
     if (productService) {
       return await productService.getProductSelect()
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function getLabsSelect (event) {
+  try {
+    const labService = new LabService()
+    if (labService) {
+      return await labService.getLabSelect()
     }
   } catch (error) {
     console.error(error)
@@ -196,7 +220,8 @@ function mainWindow () {
 
 app.whenReady().then(() => {
   ipcMain.handle('info', getInfo)
-  ipcMain.handle('formData', sendFormInfo)
+  ipcMain.handle('primarySelectData', sendPrimarySelectData)
+  ipcMain.handle('secondarySelectData', sendSecondarySelectData)
   ipcMain.handle('createEntrance', createNewEntrance)
   ipcMain.handle('sendedForm', createNewEntrance)
   ipcMain.handle('individualData', getOneDataById)

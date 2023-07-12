@@ -4,6 +4,8 @@ import FormButton from '../../Buttons/FormButton'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
 import InputLabel from '../InputLabel'
 import useSetFormIfData from '../../hooks/useSetFormIfData'
+import useGetPrimarySelectData from '../../hooks/useGetSelectData'
+import FormSearch from '../FormSearch'
 
 function ProviderForm ({ submitInfo, data }) {
   const { form, setForm, formState } = useContext(AppContext)
@@ -13,12 +15,11 @@ function ProviderForm ({ submitInfo, data }) {
   */
   const {
     handleSubmit,
-    handleInputChange,
     handleAddItem,
     handleRemoveItem,
     setComplexFormData,
     isLoaded
-  } = useSetFormIfData(data, 'labs')
+  } = useSetFormIfData(data, 'products')
 
   setComplexFormData(
     data
@@ -27,15 +28,22 @@ function ProviderForm ({ submitInfo, data }) {
           name: data.name,
           email: data.email,
           phone: data.phone,
-          labs: data.labs
+          products: data.products
         }
       : null, {
       name: '',
       email: '',
       phone: '',
-      labs: [{ labName: '' }]
+      products: []
     }
     , submitInfo)
+  // -----------------------------------------------------
+  /*
+  ---------------------------------------------------
+  CustomHook to handle the labs data
+  */
+  const { secondaryOptions } = useGetPrimarySelectData()
+  const secOptions = secondaryOptions()
   // -----------------------------------------------------
   return (
     <form
@@ -65,23 +73,16 @@ function ProviderForm ({ submitInfo, data }) {
               specialChange={(event) =>
                 setForm({ ...form, phone: event.target.value })}
             />
-            <h3 className='basis-full'>Laboratorios:</h3>
-            {form.labs.map((lab, index) => (
-              <div className='flex gap-10 items-center' key={index}>
+            <h3 className='basis-full text-center pr-24 pb-5'>Productos:</h3>
+            {form.products.map((product, index) => (
+              <div className='flex gap-10 items-center mx-5' key={index}>
                 <div
                   key={index}
                   className='flex flex-wrap border border-gray-400 rounded-lg mb-6'
                 >
-                  <div>
+                  <div className='p-3 flex flex-col w-80'>
                     <label>Nombre:</label>
-                    <input
-                      id={`name-${index}`}
-                      name='labName'
-                      type='text'
-                      value={lab.labName}
-                      className='h-12 border border-black m-5 pl-3'
-                      onChange={(event) => handleInputChange(event, index)}
-                    />
+                    <FormSearch name='productName' options={secOptions} itemName='products' index={index} item={product} />
                   </div>
                 </div>
                 <div
@@ -95,7 +96,7 @@ function ProviderForm ({ submitInfo, data }) {
           </div>
           <div
             className='w-12 rounded-full mb-6 bg-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-400 hover:text-gray-700 cursor-pointer'
-            onClick={() => handleAddItem({ labName: '' })}
+            onClick={() => handleAddItem({ productName: '' })}
           >
             <span className='text-2xl font-bold leading-none'>+</span>
           </div>

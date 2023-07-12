@@ -2,6 +2,7 @@ const boom = require('@hapi/boom')
 const { Op } = require('sequelize')
 
 const { models } = require('./../libs/sequelize')
+const nameFormat = require('./helpers/nameFormat')
 
 class ProviderService {
   /*
@@ -11,8 +12,7 @@ class ProviderService {
   async labExist (data, providerId) {
     const labs = []
     for (const lab of data) {
-      let name = lab.labName
-      name = name[0].toUpperCase() + name.substring(1).toLowerCase().trimEnd()
+      const name = nameFormat(lab.labName)
 
       const dbLab = await models.Lab.findOne({ where: { name } })
 
@@ -82,23 +82,19 @@ class ProviderService {
   }
 
   async createProvider (data) {
-    let name = data.name
-    name = name[0].toUpperCase() + name.substring(1).toLowerCase()
+    const name = nameFormat(data.name)
     const newProvider = await models.Provider.create({
       name,
       email: data.email,
-      phone: data.phone,
-      phone2: data.phone2
+      phone: data.phone
     })
-    await this.addLabs(data.labs, newProvider.dataValues.id)
 
-    await this.addProdProv(newProvider.id)
+    await this.addProdProv(newProvider.id, data.products)
     return `Proveedor ${newProvider.name} agregado correctamente`
   }
 
   async updateProvider (providerId, data) {
-    let name = data.name
-    name = name[0].toUpperCase() + name.substring(1).toLowerCase().trimEnd()
+    const name = nameFormat(data.name)
     await models.Provider.update(
       {
         ...data,
@@ -248,41 +244,44 @@ class ProviderService {
     }
   }
 
-  async addProdProv (providerId) {
-    const labs = await models.LabProvider.findAll({
-      where: { providerId }
-    })
-
-    const labsIds = labs.map((lab) => lab.labId)
-
-    const providerProducts = await models.ProductProvider.findAll({
-      where: {
-        providerId
-      },
-      attributes: ['productId']
-    })
-
-    const existingProductIds = providerProducts.map(product => product.productId)
-
-    const newProducts = await models.Product.findAll({
-      where: {
-        labId: {
-          [Op.in]: labsIds
-        },
-        id: {
-          [Op.notIn]: existingProductIds
+  /*
+  method used to add the relation between a provider and the products that belongs to that particular provider
+  data needed: {providerId: 1, products:[ { productId: 1 } ]
+ */
+  async addProdProv (providerId, products) {
+    const productsToCreateInBulk = []
+    const labsToCreateInBulk = []
+    if (products) {
+      for (const product of products) {
+        const { id } = product
+        const dbProduct = await models.Product.findByPk(id, { raw: true })
+        if (dbProduct) {
+          productsToCreateInBulk.push({
+            productId: id,
+            providerId
+          })
+          labsToCreateInBulk.push({
+            labId: dbProduct.labId,
+            providerId
+          })
+        } else {
+          const newProduct = await models.Product.create({
+            name: product.productName,
+            price: 0.1,
+            stock: 1,
+            labId: 1
+          }, { raw: true })
+          productsToCreateInBulk.push({
+            productId: newProduct.id,
+            providerId
+          })
         }
       }
-    })
-    const productProviders = newProducts.map(product => ({
-      productId: product.id,
-      providerId
-    }))
-
-    if (productProviders.length > 0) {
-      await models.ProductProvider.bulkCreate(productProviders)
+      await models.ProductProvider.bulkCreate(productsToCreateInBulk)
+      if (labsToCreateInBulk.length > 0) {
+        await models.labProv.bulkCreate(labsToCreateInBulk)
+      }
     }
-    return 'Productos añadidos correctamente'
   }
 }
 

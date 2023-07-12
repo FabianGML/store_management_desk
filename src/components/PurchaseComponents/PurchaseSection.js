@@ -1,15 +1,15 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import IndividualDataTable from '../Individual_Items/individualSections/IndividualDataTable'
 import { AppContext } from '../../app/AppContext'
 import FormSelect from '../FormComponents/FormSelect'
 import NewEntrance from '../FormComponents/NewEntrance'
 import PurchaseModal from './PurchaseModal'
+import useGetSelectData from '../hooks/useGetSelectData'
 
 function PurchaseSection () {
   const {
     form,
     setForm,
-    setFormData,
     modal,
     setModal,
     confirmation,
@@ -19,6 +19,11 @@ function PurchaseSection () {
     total,
     calculateTotal
   } = useContext(AppContext)
+
+  const { primaryOptions } = useGetSelectData()
+  const primOptions = primaryOptions('productSelect')
+  console.log(primOptions)
+
   const columns = [
     ['Producto', 'Cantidad', 'Precio Unitario', 'descuento', 'Importe', 'Editar/Eliminar'],
     ['name', 'amount', 'unitPrice', 'discount', 'total', 'delete']
@@ -41,16 +46,6 @@ function PurchaseSection () {
     })
   }
 
-  async function getProductsForSelect () {
-    await window.Data.productSelect().then((result) => {
-      setFormData(result)
-    })
-  }
-
-  useEffect(() => {
-    getProductsForSelect()
-  }, [])
-
   return (
     <main className='flex flex-col h-full w-68 pt-32 px-5 gap-20 items-center justify-center'>
       {(error || confirmation) && (
@@ -69,7 +64,7 @@ function PurchaseSection () {
               placeholder='Codigo de Barras'
               onChange={e => setForm({ code: e.target.value })}
             />
-            <FormSelect name='product' />
+            <FormSelect name='product' options={primOptions} />
             <button
               className='bg-slate-900 hover:bg-slate-700 text-white px-2 py-4 w-44 ml-5 h-full'
               onClick={(e) => {

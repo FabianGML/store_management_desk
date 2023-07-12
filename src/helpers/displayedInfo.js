@@ -38,7 +38,7 @@ function displayProducts (searchedText, rowName, value) {
   if (value.description === null) {
     value.description = 'Sin Description'
   }
-  console.log(value)
+  console.log('value', value)
   const rowIngredients = value.ingredients.toLowerCase()
   const rowLab = value['lab.name'].toLowerCase()
   const rowDescription = value.description.toLowerCase()

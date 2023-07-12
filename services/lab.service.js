@@ -52,6 +52,16 @@ class LabService {
     const lab = await models.Lab.destroy({ where: { id } })
     return `¡Laboratorio ${lab.name} borrado!`
   }
+
+  async getLabSelect () {
+    const labs = await models.Lab.findAll({ raw: true })
+    const names = labs.map((lab) => {
+      return {
+        name: lab.name
+      }
+    })
+    return names
+  }
 }
 
 module.exports = LabService

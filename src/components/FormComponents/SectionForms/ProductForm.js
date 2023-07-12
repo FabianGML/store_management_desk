@@ -5,6 +5,7 @@ import FormSelect from './../FormSelect'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
 import InputLabel from '../InputLabel'
 import useSetFormIfData from '../../hooks/useSetFormIfData'
+import useGetSelectData from '../../hooks/useGetSelectData'
 
 function ProductForm ({ submitInfo, data }) {
   const { form, setForm, formState } = useContext(AppContext)
@@ -23,6 +24,8 @@ function ProductForm ({ submitInfo, data }) {
       })
     }
   }
+  const { primaryOptions } = useGetSelectData()
+  const options = primaryOptions('primarySelectData')
 
   const formInputs = [
     ['Nombre', 'name', 'text'],
@@ -67,7 +70,7 @@ function ProductForm ({ submitInfo, data }) {
         </div>
         <div className=''>
           <label>Laboratorio</label>
-          <FormSelect name='labId' handleChange={handleChange} />
+          <FormSelect name='labId' options={options} />
         </div>
 
         <div className='flex items-center'>

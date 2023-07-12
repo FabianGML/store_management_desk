@@ -5,9 +5,14 @@ import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
 import FormSelect from './../FormSelect'
 import InputLabel from '../InputLabel'
 import useSetFormIfData from '../../hooks/useSetFormIfData'
+import useGetSelectData from '../../hooks/useGetSelectData'
+import FormSearch from '../FormSearch'
 
 function OrderForm ({ submitInfo, data }) {
   const { form, setForm, formState } = useContext(AppContext)
+  const { primaryOptions, secondaryOptions } = useGetSelectData()
+  const primOptions = primaryOptions('primarySelectData')
+  const secondOptions = secondaryOptions()
   /*
   ---------------------------------------------------
   CustomHook to handle the submit and items change, add and remove
@@ -34,7 +39,7 @@ function OrderForm ({ submitInfo, data }) {
       providerId: '',
       isPayed: false,
       orderArrive: '',
-      items: [{ name: '', unitPrice: '', amount: '', expiration: '' }]
+      items: []
     }
     , submitInfo)
   // -----------------------------------------------------
@@ -48,7 +53,7 @@ function OrderForm ({ submitInfo, data }) {
           <div className='flex flex-wrap '>
             <div>
               <label>Proveedor</label>
-              <FormSelect name='providerId' />
+              <FormSelect name='providerId' options={primOptions} />
             </div>
             <div className='mx-10 p-5 flex flex-col border border-stone-600 rounded-lg'>
               <label>¿Esta Pagado?</label>
@@ -77,16 +82,9 @@ function OrderForm ({ submitInfo, data }) {
                   <div
                     className='flex flex-wrap justify-center border border-gray-400 rounded-lg mb-6'
                   >
-                    <div>
+                    <div className='p-3 flex flex-col w-80'>
                       <label>Nombre:</label>
-                      <input
-                        id={`name-${index}`}
-                        name='name'
-                        type='text'
-                        value={item.name}
-                        className='h-12 border border-black m-5 pl-3'
-                        onChange={(event) => handleInputChange(event, index)}
-                      />
+                      <FormSearch name='name' options={secondOptions} itemName='items' index={index} item={item} />
                     </div>
                     <div>
                       <label>Precio Unitario: </label>

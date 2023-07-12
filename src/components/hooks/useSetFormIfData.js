@@ -12,13 +12,12 @@ function useSetFormIfData (data, itemName) {
 
   function handleInputChange (event, index) {
     const { name, value } = event.target
-    const labs = [...form[itemName]]
-    labs[index][name] = value
-    setForm({ ...form, labs })
+    const items = [...form[itemName]]
+    items[index][name] = value
+    setForm({ ...form, items })
   }
 
   function handleAddItem (newItemSchema) {
-    console.log(form)
     const newItem = newItemSchema
     setForm({ ...form, [itemName]: [...form[itemName], newItem] })
   }

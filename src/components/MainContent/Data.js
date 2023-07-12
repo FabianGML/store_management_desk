@@ -25,7 +25,7 @@ function Data () {
   }, [currentSection])
 
   if (displayedInfo.length === 0 && searchValue.length === 0) {
-    return <p className='w-full text-xl text-center border border-red-600'>No hay {currentSection}</p>
+    return <p className='w-full text-xl text-center'>No hay {currentSection}</p>
   }
   if (displayedInfo.length === 0 && searchValue.length > 0) {
     return (
