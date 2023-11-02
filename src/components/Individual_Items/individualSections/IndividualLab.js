@@ -18,7 +18,6 @@ function IndividualLab ({ id, handleUpdate, individualInfo }) {
     return <LoadingSpinner />
   }
 
-  console.log(individualInfo)
   return (
     <div className='overflow-x-hidden'>
       <div className='flex h-full w-screen pt-32 ml-10 items-start'>

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import Content from './Content'
 import Title from '../GeneralComponents/Title'
 import Modal from '../../Modal/Modal'
@@ -15,28 +15,23 @@ function MainContent () {
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
-    try {
-      const response = await window.Data.createEntrance(currentSection, form)
+    const response = await window.Data.createEntrance(currentSection, form)
+    if (response && !response.validationErrors) {
       navigate(`/${currentSection}`)
       setModal(false)
       setFormState({
-        loading: false
+        loading: false,
+        response
       })
-      if (response) {
-        setFormState({
-          ...formState,
-          response
-        })
-        setForm({})
-      }
-    } catch (error) {
-      console.error(error)
+      setForm({})
+    }
+    if (response.validationErrors) {
+      setFormState({
+        loading: false,
+        validationErrors: response.validationErrors
+      })
     }
   }
-
-  useEffect(() => {
-    handleSubmit()
-  }, [])
 
   return (
     <main className='px-5 flex justify-center'>

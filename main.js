@@ -6,6 +6,10 @@ const OrderService = require('./services/order.service')
 const ProviderService = require('./services/provider.service')
 const LabService = require('./services/lab.service')
 const SaleService = require('./services/sale.service')
+const { labSchema } = require('./schemas/lab.schema')
+const { createProductSchema } = require('./schemas/product.schema')
+const { createOrderSchema } = require('./schemas/order.schema')
+const { createProviderSchema } = require('./schemas/provider.schema')
 
 const services = {
   Productos: {
@@ -23,7 +27,8 @@ const services = {
     createOrder: { service: new OrderService(), method: 'createOrder' },
     getOneOrder: { service: new OrderService(), method: 'getOneOrder' },
     deleteOrder: { service: new OrderService(), method: 'deleteOrder' },
-    updateOrder: { service: new OrderService(), method: 'updateOrder' }
+    updateOrder: { service: new OrderService(), method: 'updateOrder' },
+    thirdSelectData: { service: new LabService(), method: 'getAllLabs' }
   },
   Proveedores: {
     mainInfo: { service: new ProviderService(), method: 'getProviders' },
@@ -31,7 +36,8 @@ const services = {
     createProvider: { service: new ProviderService(), method: 'createProvider' },
     getOneProvider: { service: new ProviderService(), method: 'getOneProvider' },
     deleteProvider: { service: new ProviderService(), method: 'deleteProvider' },
-    updateProvider: { service: new ProviderService(), method: 'updateProvider' }
+    updateProvider: { service: new ProviderService(), method: 'updateProvider' },
+    thirdSelectData: { service: new LabService(), method: 'getAllLabs' }
   },
   Laboratorios: {
     mainInfo: { service: new LabService(), method: 'getAllLabs' },
@@ -44,6 +50,12 @@ const services = {
   Ventas: {
     mainInfo: { service: new SaleService(), method: 'getSalesBetweenDates' }
   }
+}
+const schemas = {
+  Productos: createProductSchema,
+  Laboratorios: labSchema,
+  Pedidos: createOrderSchema,
+  Proveedores: createProviderSchema
 }
 
 async function getInfo (event, section) {
@@ -79,8 +91,29 @@ async function createNewEntrance (event, section, data) {
   try {
     const serviceData = services[section]
     if (serviceData) {
-      const { service, method } = serviceData[Object.keys(serviceData)[2]]
-      return await service[method](data)
+      const { error } = schemas[section].validate(data, { abortEarly: false })
+      if (error) {
+        console.log(error)
+        const errors = error.details.map(obj => {
+          if (obj.path[0] === 'items') {
+            const matchResult = obj.message.match(/\.([^."'\s]+)/)
+            let wordInsideQuotes
+            console.log('matchResult---------', matchResult)
+            if (matchResult && matchResult.length >= 2) {
+              wordInsideQuotes = matchResult[1]
+            }
+            return wordInsideQuotes
+          } else {
+            return obj.path[0]
+          }
+        })
+        return {
+          validationErrors: errors
+        }
+      } else {
+        const { service, method } = serviceData[Object.keys(serviceData)[2]]
+        return await service[method](data)
+      }
     } else {
       return null
     }
@@ -117,7 +150,41 @@ async function updateEntrance (event, section, id, data) {
   try {
     const serviceData = services[section]
     if (serviceData) {
-      const { service, method } = serviceData[Object.keys(serviceData)[5]]
+      const { error } = schemas[section].validate(data, { abortEarly: false })
+      if (error) {
+        console.log(error)
+        const errors = error.details.map(obj => {
+          if (obj.path[0] === 'items') {
+            const matchResult = obj.message.match(/\.([^."'\s]+)/)
+            let wordInsideQuotes
+            if (matchResult && matchResult.length >= 2) {
+              wordInsideQuotes = matchResult[1]
+            }
+            return wordInsideQuotes
+          } else {
+            return obj.path[0]
+          }
+        })
+        return {
+          validationErrors: errors
+        }
+      } else {
+        const { service, method } = serviceData[Object.keys(serviceData)[2]]
+        return await service[method](id, data)
+      }
+    } else {
+      return null
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function sendThirdSelectData (event, section, id, data) {
+  try {
+    const serviceData = services[section]
+    if (serviceData) {
+      const { service, method } = serviceData[Object.keys(serviceData)[6]]
       return await service[method](id, data)
     }
   } catch (error) {
@@ -222,6 +289,7 @@ app.whenReady().then(() => {
   ipcMain.handle('info', getInfo)
   ipcMain.handle('primarySelectData', sendPrimarySelectData)
   ipcMain.handle('secondarySelectData', sendSecondarySelectData)
+  ipcMain.handle('thirdSelectData', sendThirdSelectData)
   ipcMain.handle('createEntrance', createNewEntrance)
   ipcMain.handle('sendedForm', createNewEntrance)
   ipcMain.handle('individualData', getOneDataById)

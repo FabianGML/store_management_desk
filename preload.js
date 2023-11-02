@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('Data', {
   info: (section) => ipcRenderer.invoke('info', section), // retrives the main info
   primarySelectData: (section) => ipcRenderer.invoke('primarySelectData', section), // Depends on the section the user are, some forms need data from other table
   secondarySelectData: (section) => ipcRenderer.invoke('secondarySelectData', section), // Depends on the section the user are, some forms need data from other table
+  thirdSelectData: (section) => ipcRenderer.invoke('thirdSelectData', section), // Depends on the section the user are, some forms need data from other table
   createEntrance: (section, form) => ipcRenderer.invoke('createEntrance', section, form), // This property handles the information that comes from a form
   individualData: (section, id) => ipcRenderer.invoke('individualData', section, id), // This property handles the individual (product, order,  provider) info, it is a "FinOne.."
   deleteEntrance: (section, id) => ipcRenderer.invoke('deleteEntrance', section, id), // Delete an entrance from the db

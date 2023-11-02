@@ -34,21 +34,17 @@ function IndividualSection () {
   }, [confirmation])
 
   async function handleUpdate () {
-    try {
-      await window.Data.updateEntrance(currentSection, id, form).then(
-        (result) => {
-          setConfirmation(result)
-        }
-      )
-      setModal(false)
-      navigate(`/${currentSection}/${id}`)
-      setFormState({
-        loading: false,
-        response: {}
-      })
-    } catch (error) {
-      console.log(error)
-    }
+    await window.Data.updateEntrance(currentSection, id, form).then(
+      (result) => {
+        setConfirmation(result)
+      }
+    )
+    setModal(false)
+    navigate(`/${currentSection}/${id}`)
+    setFormState({
+      loading: false,
+      response: {}
+    })
   }
 
   const memorizedIndividualInfo = useMemo(

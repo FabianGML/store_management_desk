@@ -9,7 +9,8 @@ function Data () {
     setDisplayedInfo,
     info,
     setInfo,
-    currentSection
+    currentSection,
+    confirmation
   } = useContext(AppContext)
 
   // Geting the info depends in the section we currently are
@@ -22,7 +23,7 @@ function Data () {
 
   useEffect(() => {
     getInfo()
-  }, [currentSection])
+  }, [currentSection, confirmation])
 
   if (displayedInfo.length === 0 && searchValue.length === 0) {
     return <p className='w-full text-xl text-center'>No hay {currentSection}</p>

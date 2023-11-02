@@ -4,11 +4,14 @@ import { AppContext } from '../app/AppContext'
 import close from '../svg/close-svgrepo-com.svg'
 
 function Modal ({ productForm, orderForm, providerForm, labForm, handleSubmit }) {
-  const { currentSection, setModal } = React.useContext(AppContext)
+  const { currentSection, setModal, setFormState } = React.useContext(AppContext)
 
   function closeModal () {
     if (setModal) {
       setModal(false)
+      setFormState({
+        loading: false
+      })
     }
   }
 
@@ -19,6 +22,7 @@ function Modal ({ productForm, orderForm, providerForm, labForm, handleSubmit })
         className='h-8 mr-10 mt-5 hover:bg-stone-400 cursor-pointer rounded-md'
         onClick={closeModal}
       />
+      <p className='w-11/12 text-lg font-semibold'>*Campos Obligatorios</p>
       {currentSection === 'Productos' &&
         productForm(handleSubmit)}
       {currentSection === 'Pedidos' &&

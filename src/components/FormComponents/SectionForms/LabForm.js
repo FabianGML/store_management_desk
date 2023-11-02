@@ -3,11 +3,12 @@ import { AppContext } from '../../../app/AppContext'
 import FormButton from '../../Buttons/FormButton'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
 import InputLabel from '../InputLabel'
-import useSetFormIfData from '../../hooks/useSetFormIfData'
+import useInputHandlers from '../../hooks/useInputHandlers'
+import ErrorMessage from '../ErrorMessage'
 
 function LabForm ({ submitInfo, data }) {
   const { formState } = useContext(AppContext)
-  useSetFormIfData(data)
+  useInputHandlers(data)
 
   return (
     <form
@@ -15,7 +16,8 @@ function LabForm ({ submitInfo, data }) {
       className='p-5 w-full h-full overflow-scroll flex flex-col items-center'
     >
       <div className='flex flex-wrap '>
-        <InputLabel text='Nombre del laboratorio' name='name' type='text' />
+        {formState.validationErrors && formState.validationErrors.includes('name') && <ErrorMessage text='El nombre es obligatorio' />}
+        <InputLabel text='Nombre del laboratorio' name='name' type='text' required />
       </div>
       {!formState.loading && (
         <FormButton

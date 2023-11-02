@@ -7,19 +7,17 @@ import InfoBlock from '../InfoBlock'
 import IndividualDataTable from './IndividualDataTable'
 import Modal from '../../../Modal/Modal'
 import UpdateButton from '../UpdateButton'
-import AddButton from '../AddButton'
 
-function IndividualProvider ({ id, handleUpdate, individualInfo }) {
+function IndividualProvider ({ handleUpdate, individualInfo }) {
   const { modal, setModal } = useContext(AppContext)
   if (!individualInfo) {
     return <LoadingSpinner />
   }
-  console.log(individualInfo)
   const columns = [
     [['Nombre'], ['labName']],
     [
       ['Producto', 'Laboratorio', 'Stock', 'Caducidad'],
-      ['name', 'lab', 'stock', 'expiration']
+      ['productName', 'lab', 'stock', 'expiration']
     ]
   ]
   return (
@@ -45,9 +43,9 @@ function IndividualProvider ({ id, handleUpdate, individualInfo }) {
         </div>
         <div className='w-7/12'>
           <h3 className='text-4xl font-semibold text-center'>Productos</h3>
-          {individualInfo.products && (
+          {individualInfo.items && (
             <IndividualDataTable
-              individualData={individualInfo.products}
+              individualData={individualInfo.items}
               columns={columns[1]}
             />
           )}
@@ -55,7 +53,6 @@ function IndividualProvider ({ id, handleUpdate, individualInfo }) {
       </div>
       <div className='w-full flex justify-center mt-12 gap-10 mb-24'>
         <UpdateButton setModal={setModal} />
-        <AddButton id={id} />
       </div>
       {modal.showModal && modal.modalType === 'update' && (
         <Modal

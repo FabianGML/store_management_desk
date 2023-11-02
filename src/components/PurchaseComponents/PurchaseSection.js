@@ -22,7 +22,6 @@ function PurchaseSection () {
 
   const { primaryOptions } = useGetSelectData()
   const primOptions = primaryOptions('productSelect')
-  console.log(primOptions)
 
   const columns = [
     ['Producto', 'Cantidad', 'Precio Unitario', 'descuento', 'Importe', 'Editar/Eliminar'],

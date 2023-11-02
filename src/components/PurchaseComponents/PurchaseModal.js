@@ -1,7 +1,7 @@
 import { createPortal } from 'react-dom'
 import ConfirmationButton from './ConfirmationButton'
 import RejectButton from './RejectButton'
-import { Fragment, useContext } from 'react'
+import { useContext } from 'react'
 import { AppContext } from '../../app/AppContext'
 
 function PurchaseModal ({ name, id }) {
@@ -12,7 +12,6 @@ function PurchaseModal ({ name, id }) {
       {modal.modalType === 'delete' && (
         <>
           <p className='text-xl text-center'>
-            {' '}
             Seguro que quieres retirar {name} ?
           </p>
           <div className=' flex gap-5 mt-7'>
@@ -32,7 +31,7 @@ function PurchaseModal ({ name, id }) {
             onChange={(e) => setForm(e.target.value)}
           />
           <p className='text-2xl text-center'>
-            {`Cambio: ${form - total || 0}`}{' '}
+            {`Cambio: ${(form - total) < 0 || isNaN(form - total) ? 0 : form - total}`}
           </p>
           <div className=' flex gap-5 mt-7'>
             <ConfirmationButton id={id} />

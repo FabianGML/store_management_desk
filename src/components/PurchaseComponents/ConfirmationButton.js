@@ -45,7 +45,6 @@ function ConfirmationButton ({ id }) {
         discount
       }
     })
-    console.log(data)
     await window.Data.createSale(data).then((result) => {
       setConfirmation(result)
     })
@@ -65,7 +64,6 @@ function ConfirmationButton ({ id }) {
           discount ? item.total = sumOfItems - (sumOfItems * (discount / 100)) : item.total = sumOfItems
         }
         if (form.discount) {
-          console.log('estoy entrando')
           item.discount = form.discount
           item.total = (item.unitPrice - (item.unitPrice * (form.discount / 100))) * item.amount
         }

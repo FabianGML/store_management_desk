@@ -1,5 +1,4 @@
 const boom = require('@hapi/boom')
-const { Op } = require('sequelize')
 
 const { models } = require('./../libs/sequelize')
 const nameFormat = require('./helpers/nameFormat')
@@ -20,9 +19,9 @@ class ProviderService {
         const newLab = await models.Lab.create({
           name
         })
-        lab.labId = newLab.dataValues.id
+        lab.lab = newLab.dataValues.id
       } else {
-        lab.labId = dbLab.dataValues.id
+        lab.lab = dbLab.dataValues.id
       }
       lab.providerId = providerId
       labs.push(lab)
@@ -54,10 +53,10 @@ class ProviderService {
     })
 
     const labs = []
-    const products = []
+    const items = []
     /* -----------------------------------------------------------------------------------------------
     For each result from the ProductsProvider and LabProvider tables, we need to find the information
-    from each product and each lab to print it on the screen
+    from each item and each lab to print it on the screen
 
     ------------------------------------------------------------------------------------------------ */
     for (const lab of labsIds) {
@@ -65,19 +64,18 @@ class ProviderService {
       labs.push({ labId: lab.labId, labName: labName.name })
     }
 
-    for (const product of productsIds) {
-      const productInfo = await models.Product.findByPk(product.productId, {
-        include: ['lab']
-      })
-      products.push({
-        name: productInfo.name,
+    for (const item of productsIds) {
+      const productInfo = await models.Product.findByPk(item.productId)
+      items.push({
+        id: productInfo.id,
+        productName: productInfo.name,
         stock: productInfo.stock,
         expiration: productInfo.expiration,
-        lab: productInfo.lab.name
+        lab: productInfo.labId
       })
     }
 
-    const completeProvider = { ...provider, labs, products }
+    const completeProvider = { ...provider, labs, items }
     return completeProvider
   }
 
@@ -89,7 +87,7 @@ class ProviderService {
       phone: data.phone
     })
 
-    await this.addProdProv(newProvider.id, data.products)
+    await this.addProdProv(newProvider.id, data.items)
     return `Proveedor ${newProvider.name} agregado correctamente`
   }
 
@@ -102,40 +100,49 @@ class ProviderService {
       },
       { where: { id: providerId } }
     )
-    await this.updateLabs(data.labs, providerId)
+    await this.updateItems(data.items, providerId)
 
     return '¡El proveedor cambio correctamente!'
   }
 
-  async updateLabs (labsData, providerId) {
+  async updateItems (items, providerId) {
     /* ---------------------------------------------------------------------------------
     if the user adds, update or delete a lab from a provider, this code block add or update the
-    lab wheter or not, the name has changed or not
+    lab wheter or not the name has changed
   */
-    const updatedLabs = []
-    for (const lab of labsData) {
-      if (lab.labId) {
-        const { labId, labName } = lab
-        let formName = labName
-        formName =
-          formName[0].toUpperCase() +
-          formName.substring(1).toLowerCase().trimEnd()
-
-        const dbLab = await models.Lab.findByPk(labId)
-        if (dbLab.name !== formName) {
-          const rawLab = await this.addLabs([lab])
-          await models.LabProvider.destroy({ where: { labId, providerId } })
-          updatedLabs.push(rawLab[0])
+    const dbProductsProvider = await models.ProductProvider.findAll({ where: { providerId }, raw: true })
+    const dbLabsProviders = await models.LabProvider.findAll({ where: { providerId }, raw: true })
+    const dbLabsProvidersIds = dbLabsProviders.map(row => row.labId)
+    const formLabs = []
+    const formProducts = []
+    const productsToCreateInBulk = []
+    if (items.length > 0) {
+      for (const item of items) {
+        const { id } = item
+        const dbProduct = await models.Product.findByPk(id, { raw: true })
+        if (dbProduct) {
+          productsToCreateInBulk.push({ id: dbProduct.id })
+          formProducts.push(id)
+          formLabs.push(dbProduct.labId)
         } else {
-          updatedLabs.push(lab)
+          const newProduct = await this.addProdProv(providerId, [item])
+          formProducts.push(newProduct.id)
+          formLabs.push(newProduct.labId)
         }
-      } else {
-        const rawNewLab = await this.addLabs([lab], providerId)
-        updatedLabs.push(rawNewLab[0])
+      }
+      await this.addProdProv(providerId, productsToCreateInBulk)
+    }
+    if (dbProductsProvider) {
+      const labsIdsToDelete = dbLabsProvidersIds.filter(labId => !formLabs.includes(labId))
+      for (const labId of labsIdsToDelete) {
+        await models.LabProvider.destroy({ where: { labId } })
+      }
+      const dbProductsIds = dbProductsProvider.map(row => row.productId)
+      const productsIdsToDelete = dbProductsIds.filter(product => !formProducts.includes(product))
+      for (const productId of productsIdsToDelete) {
+        await models.ProductProvider.destroy({ where: { productId } })
       }
     }
-    const idsDeleted = await this.deleteLabs(updatedLabs, providerId)
-    await this.updateProductsProvider(idsDeleted, providerId)
   }
   // ------------------------------------------------------------------------------------
 
@@ -165,7 +172,7 @@ class ProviderService {
     })
 
     const dbLabsIds = labProvider.map((labProv) => labProv.labId)
-    const formLabsIds = data.map((form) => form.labId)
+    const formLabsIds = data.map((form) => form.lab)
     const labsIdsForDelete = dbLabsIds.filter(
       (labId) => !formLabsIds.includes(labId)
     )
@@ -181,107 +188,64 @@ class ProviderService {
     return labsIdsForDelete
   }
 
-  async updateProductsProvider (idsDeleted, providerId) {
-    const labs = await models.LabProvider.findAll({
-      where: { providerId }
-    })
-
-    const labsIds = labs.map((lab) => lab.labId)
-
-    let products = []
-
-    if (idsDeleted && idsDeleted.length > 0) {
-      products = await models.Product.findAll({
-        where: {
-          labId: {
-            [Op.in]: idsDeleted
-          }
-        }
-      })
-    }
-
-    const providerProducts = await models.ProductProvider.findAll({
-      where: {
-        providerId,
-        productId: {
-          [Op.notIn]: products.map(product => product.id)
-        }
-      },
-      attributes: ['productId']
-    })
-
-    const existingProductIds = providerProducts.map(product => product.productId)
-
-    const newProducts = await models.Product.findAll({
-      where: {
-        labId: {
-          [Op.in]: labsIds
-        },
-        id: {
-          [Op.notIn]: existingProductIds
-        }
-      }
-    })
-
-    const productProviders = newProducts.map(product => ({
-      productId: product.id,
-      providerId
-    }))
-
-    if (productProviders.length > 0) {
-      await models.ProductProvider.bulkCreate(productProviders)
-    }
-
-    if (idsDeleted && idsDeleted.length > 0) {
-      await models.ProductProvider.destroy({
-        where: {
-          providerId,
-          productId: {
-            [Op.in]: products.map(product => product.id)
-          }
-        }
-      })
-    }
-  }
-
   /*
   method used to add the relation between a provider and the products that belongs to that particular provider
-  data needed: {providerId: 1, products:[ { productId: 1 } ]
+  data needed: {providerId: 1, items:[ { productId: 1 } ]
  */
-  async addProdProv (providerId, products) {
+  async addProdProv (providerId, items) {
     const productsToCreateInBulk = []
-    const labsToCreateInBulk = []
-    if (products) {
-      for (const product of products) {
-        const { id } = product
+    const rawLabsToCreateInBulk = []
+    const labsProvidersDb = await models.LabProvider.findAll({ where: { providerId }, raw: true })
+    const labsProvidersIds = labsProvidersDb.map(row => row.labId)
+    if (items) {
+      for (const item of items) {
+        const { id } = item
+        console.log(item)
+        if (item.lab && typeof item.lab !== 'number') {
+          const name = nameFormat(item.lab)
+          const newLab = await models.Lab.create({ name })
+          item.lab = newLab.id
+        }
         const dbProduct = await models.Product.findByPk(id, { raw: true })
         if (dbProduct) {
-          productsToCreateInBulk.push({
-            productId: id,
-            providerId
-          })
-          labsToCreateInBulk.push({
-            labId: dbProduct.labId,
-            providerId
-          })
+          if (!await models.ProductProvider.findOne({ where: { productId: dbProduct.id, providerId } })) {
+            productsToCreateInBulk.push({
+              productId: id,
+              providerId
+            })
+          }
+          if (!rawLabsToCreateInBulk.includes(dbProduct.labId)) {
+            rawLabsToCreateInBulk.push(dbProduct.labId)
+          }
         } else {
-          const newProduct = await models.Product.create({
-            name: product.productName,
-            price: 0.1,
-            stock: 1,
-            labId: 1
+          const name = nameFormat(item.productName)
+          // eslint-disable-next-line no-var
+          var newProduct = await models.Product.create({
+            name,
+            price: Number(item.price),
+            stock: Number(item.amount),
+            codeBar: Number(item.codeBar) || null,
+            ingredients: item.ingredients,
+            labId: item.lab,
+            description: item.description || '',
+            expiration: item.expiration
           }, { raw: true })
           productsToCreateInBulk.push({
             productId: newProduct.id,
             providerId
           })
+          if (!rawLabsToCreateInBulk.includes(item.lab)) {
+            rawLabsToCreateInBulk.push(item.lab)
+          }
         }
       }
       await models.ProductProvider.bulkCreate(productsToCreateInBulk)
-      if (labsToCreateInBulk.length > 0) {
-        await models.labProv.bulkCreate(labsToCreateInBulk)
+      if (rawLabsToCreateInBulk.length > 0) {
+        const labsToAdd = rawLabsToCreateInBulk.filter(labId => !labsProvidersIds.includes(labId)).map((labId) => { return { labId, providerId } })
+        await models.LabProvider.bulkCreate(labsToAdd)
       }
     }
+    return newProduct
   }
 }
 

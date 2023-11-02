@@ -1,15 +1,33 @@
 const Joi = require('joi')
 
+const name = Joi.string().required()
+const email = Joi.string().email().allow('')
+const phone = Joi.string().min(8).allow('')
 const providerId = Joi.number().positive().required()
 const labProviderId = Joi.number().positive().required()
-const name = Joi.string()
-const email = Joi.string().email()
-const phone = Joi.string().min(8)
-const phone2 = Joi.string().min(8)
 
-const labName = Joi.string().required()
-const labs = Joi.array().items(Joi.object({
-  labName
+const id = Joi.number().positive().when('codeBar', { not: Joi.exist(), then: Joi.required() })
+const productName = Joi.string().required()
+const amount = Joi.number().positive().when('codeBar', { is: Joi.exist(), then: Joi.required() })
+const price = Joi.number().positive().when('codeBar', { is: Joi.exist(), then: Joi.required() })
+const codeBar = Joi.number().positive().allow('')
+const ingredients = Joi.string().allow('')
+const image = Joi.object().allow('')
+const expiration = Joi.date().when('codeBar', { is: Joi.exist(), then: Joi.required() })
+const lab = Joi.alternatives().try(Joi.number().positive(), Joi.string()).when('codeBar', { is: Joi.exist(), then: Joi.required() })
+const description = Joi.string().allow('')
+
+const items = Joi.array().items(Joi.object({
+  id,
+  productName,
+  amount,
+  expiration,
+  price,
+  codeBar,
+  ingredients,
+  image,
+  lab,
+  description
 }))
 
 /* product-provider Schema */
@@ -29,22 +47,16 @@ const getLabProviderSchema = Joi.object({
 })
 
 const createProviderSchema = Joi.object({
-  name: name.required(),
-  email,
-  phone,
-  phone2,
-  labs
-})
-
-const updateProviderSchema = Joi.object({
   name,
   email,
   phone,
-  phone2
+  items
 })
 
-const labsSchema = Joi.object({
-  labs
+const updateProviderSchema = Joi.object({
+  productName,
+  email,
+  phone
 })
 
 /* product-providder */
@@ -62,4 +74,4 @@ const updateProductProvSchema = Joi.object({
   productId
 })
 
-module.exports = { getProviderSchema, getLabProviderSchema, createProviderSchema, updateProviderSchema, labsSchema, getProductProvSchema, createProductProvSchema, updateProductProvSchema }
+module.exports = { getProviderSchema, getLabProviderSchema, createProviderSchema, updateProviderSchema, getProductProvSchema, createProductProvSchema, updateProductProvSchema }

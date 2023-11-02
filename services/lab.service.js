@@ -2,6 +2,7 @@ const boom = require('@hapi/boom')
 const sequelize = require('sequelize')
 
 const { models } = require('./../libs/sequelize')
+const nameFormat = require('./helpers/nameFormat')
 
 class LabService {
   /*
@@ -31,18 +32,16 @@ class LabService {
   }
 
   async createLab (data) {
-    let name = data.name
-    name = name[0].toUpperCase() + name.substring(1).toLowerCase()
+    const name = nameFormat(data.name)
     const newLab = await models.Lab.create({
       name
     })
-    return `¡Laboratorio ${newLab.name} agregado exitosamente!`
+    return { message: `¡Laboratorio ${newLab.name} agregado exitosamente!` }
   }
 
   async updateLab (labId, data) {
     const { id } = await this.getOneLab(labId)
-    let name = data.name
-    name = name[0].toUpperCase() + name.substring(1).toLowerCase()
+    const name = nameFormat(data.name)
     console.log(name)
     await models.Lab.update({ name }, { where: { id } })
     return '¡El laboratorio cambio correctamente!'

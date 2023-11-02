@@ -9,7 +9,8 @@ function Section ({ svg, text, path }) {
     setForm,
     setConfirmation,
     setFormState,
-    setModal
+    setModal,
+    setExtendedItem
   } = React.useContext(AppContext)
 
   const changeSection = () => {
@@ -23,6 +24,7 @@ function Section ({ svg, text, path }) {
     })
     setModal(false)
     setSearchValue('')
+    setExtendedItem([])
   }
   return (
     <li>

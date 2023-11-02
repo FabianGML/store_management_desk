@@ -1,54 +1,65 @@
-const Joi = require('joi').extend(require('@joi/date'));
+const Joi = require('joi').extend(require('@joi/date'))
 
-const id = Joi.number().positive().required();
-const itemId = Joi.number().positive().required();
-const providerId = Joi.number().positive();
-const orderArrive = Joi.date();
-const isPayed = Joi.boolean();
+const id = Joi.number().positive().when('codeBar', { not: Joi.exist(), then: Joi.required() })
+const itemId = Joi.number().positive().required()
+const providerId = Joi.number().positive().required()
+const orderArrive = Joi.date()
+const isPayed = Joi.boolean()
 
-const orderId = Joi.number().positive();
-const name = Joi.string();
-const unitPrice = Joi.number().positive();
-const amount = Joi.number().positive();
-const expiration = Joi.date();
+const orderId = Joi.number().positive()
+const name = Joi.string().required()
+const unitPrice = Joi.number().positive().required()
+const salePrice = Joi.number().positive().when('codeBar', { is: Joi.exist(), then: Joi.required() })
+const amount = Joi.number().positive().required()
+const codeBar = Joi.number().positive().allow('')
+const ingredients = Joi.string().allow('')
+const image = Joi.object().allow('')
+const expiration = Joi.date().required()
+const lab = Joi.alternatives().try(Joi.number().positive().required(), Joi.string()).when('codeBar', { is: Joi.exist(), then: Joi.required() })
+const description = Joi.string().allow('')
 const items = Joi.array().items(Joi.object({
-    name: name.required(),
-    unitPrice,
-    amount: amount.required(),
-    expiration
+  id,
+  name,
+  unitPrice,
+  amount,
+  expiration,
+  salePrice,
+  codeBar,
+  ingredients,
+  image,
+  lab,
+  description
 }))
- 
-
 
 const getOrderSchema = Joi.object({
-    id
-});
+  id
+})
 
 const getOrderProductSchema = Joi.object({
-    id,
-    itemId
+  id,
+  itemId
 })
 
 const createOrderSchema = Joi.object({
-    providerId: providerId.required(),
-    isPayed,
-    orderArrive,
-    items
-});
+  providerId,
+  isPayed,
+  orderArrive,
+  items
+})
 
 const updateOrderSchema = Joi.object({
-    providerId,
-    isPayed,
-    orderArrive
-});
+  providerId,
+  isPayed,
+  orderArrive
+})
 
 const updateItemSchema = Joi.object({
-    items
+  items
 })
 
 const addItemSchema = Joi.object({
-    orderId,
-    items
+  orderId,
+  items
 
 })
 

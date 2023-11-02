@@ -2,24 +2,27 @@ import { useContext } from 'react'
 import { AppContext } from '../../../app/AppContext'
 import FormButton from '../../Buttons/FormButton'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
-import InputLabel from '../InputLabel'
-import useSetFormIfData from '../../hooks/useSetFormIfData'
-import useGetPrimarySelectData from '../../hooks/useGetSelectData'
+import useInputHandlers from '../../hooks/useInputHandlers'
+import useGetSelectData from '../../hooks/useGetSelectData'
 import FormSearch from '../FormSearch'
+import FormTextArea from '../FormTextArea'
+import ErrorMessage from '../ErrorMessage'
+import InputLabel from '../InputLabel'
 
 function ProviderForm ({ submitInfo, data }) {
-  const { form, setForm, formState } = useContext(AppContext)
+  const { form, setForm, formState, extendedItem } = useContext(AppContext)
   /*
   ---------------------------------------------------
   CustomHook to handle the submit and items change, add and remove
   */
   const {
     handleSubmit,
+    handleInputChange,
     handleAddItem,
     handleRemoveItem,
     setComplexFormData,
     isLoaded
-  } = useSetFormIfData(data, 'products')
+  } = useInputHandlers(data, 'items')
 
   setComplexFormData(
     data
@@ -28,13 +31,13 @@ function ProviderForm ({ submitInfo, data }) {
           name: data.name,
           email: data.email,
           phone: data.phone,
-          products: data.products
+          items: data.items
         }
       : null, {
       name: '',
       email: '',
       phone: '',
-      products: []
+      items: []
     }
     , submitInfo)
   // -----------------------------------------------------
@@ -42,8 +45,8 @@ function ProviderForm ({ submitInfo, data }) {
   ---------------------------------------------------
   CustomHook to handle the labs data
   */
-  const { secondaryOptions } = useGetPrimarySelectData()
-  const secOptions = secondaryOptions()
+  const { secondaryOptions } = useGetSelectData()
+  const { secondarySelectOptions, thirdSelectOptions } = secondaryOptions()
   // -----------------------------------------------------
   return (
     <form
@@ -54,36 +57,128 @@ function ProviderForm ({ submitInfo, data }) {
         <>
           <div className='flex flex-wrap justify-center' id='form'>
             <InputLabel
-              text='Nombre del Proveedor:'
+              text='*Nombre del Proveedor:'
               name='name'
               type='text'
-              specialChange={(event) =>
-                setForm({ ...form, name: event.target.value })}
+              placeHolder='Soya natura...'
+              required
             />
             <InputLabel
-              text='Email:' name='email'
-              type='text'
-              specialChange={(event) =>
-                setForm({ ...form, email: event.target.value })}
+              text='Email:'
+              name='email'
+              placeHolder='correo@mail.com'
+              type='email'
             />
             <InputLabel
               text='Telefono:'
               name='phone'
-              type='phone'
-              specialChange={(event) =>
-                setForm({ ...form, phone: event.target.value })}
+              placeHolder='55834723'
+              type='number'
             />
             <h3 className='basis-full text-center pr-24 pb-5'>Productos:</h3>
-            {form.products.map((product, index) => (
-              <div className='flex gap-10 items-center mx-5' key={index}>
+            {form.items.map((item, index) => (
+              <div className='flex gap-10 items-center' key={index}>
                 <div
-                  key={index}
-                  className='flex flex-wrap border border-gray-400 rounded-lg mb-6'
+                  className='flex flex-wrap justify-center border border-gray-400 rounded-lg mb-6 px-10'
                 >
                   <div className='p-3 flex flex-col w-80'>
-                    <label>Nombre:</label>
-                    <FormSearch name='productName' options={secOptions} itemName='products' index={index} item={product} />
+                    <label>Nombre del producto:</label>
+                    {formState.validationErrors && formState.validationErrors.includes('productName') && <ErrorMessage text='Elproducto es obligatorio' />}
+                    <FormSearch
+                      name='productName'
+                      options={secondarySelectOptions}
+                      itemName='items'
+                      index={index}
+                      item={item}
+                      extendedItemSchema={{
+                        price: '',
+                        codeBar: '',
+                        ingredients: '',
+                        expiration: '',
+                        image: '',
+                        lab: '',
+                        description: ''
+                      }}
+                    />
                   </div>
+                  {extendedItem.includes(index) && (
+                    <>
+                      <InputLabel
+                        text='*Cantidad:'
+                        name='amount'
+                        type='number'
+                        specialChange={(event) => handleInputChange(event, index)}
+                        index={index}
+                        required
+                      />
+                      <InputLabel
+                        text='*Caducidad:'
+                        name='expiration'
+                        type='date'
+                        specialChange={(event) => handleInputChange(event, index)}
+                        index={index}
+                        required
+                      />
+                      <InputLabel
+                        text='*Precio de venta:'
+                        name='price'
+                        type='number'
+                        specialChange={(event) => handleInputChange(event, index)}
+                        index={index}
+                        required
+                      />
+                      <InputLabel
+                        text='Codigo de Barras:'
+                        name='codeBar'
+                        type='number'
+                        placeHolder='087952345'
+                        specialChange={(event) => handleInputChange(event, index)}
+                        index={index}
+                      />
+                      <InputLabel
+                        text='Ingredientes:'
+                        name='ingredients'
+                        type='text'
+                        placeHolder='Manzanilla, Equinacea...'
+                        specialChange={(event) => handleInputChange(event, index)}
+                        index={index}
+                      />
+                      <div className='flex gap-5 items-center m-5'>
+                        <label>Imagen:</label>
+                        <input
+                          name='image'
+                          type='file'
+                          className='w-72'
+                          onChange={(e) => {
+                            const file = e.target.files[0]
+                            setForm({
+                              ...form,
+                              image: {
+                                name: file.name,
+                                path: file.path,
+                                type: file.type
+                              }
+                            })
+                          }}
+                        />
+                      </div>
+                      <div>
+                        {formState.validationErrors && formState.validationErrors.includes('lab') && <ErrorMessage text='El Laboratorio es obligatorio' />}
+                        <div className='w-72'>
+                          <label>*Laboratorio:</label>
+                          <FormSearch
+                            name='lab'
+                            options={thirdSelectOptions}
+                            itemName='items'
+                            index={index}
+                            item={item}
+                            lab
+                          />
+                        </div>
+                      </div>
+                      <FormTextArea handleChange={(event) => handleInputChange(event, index)} />
+                    </>
+                  )}
                 </div>
                 <div
                   className='w-12 h-6 rounded-full mb-6 bg-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-400 hover:text-gray-700 cursor-pointer'

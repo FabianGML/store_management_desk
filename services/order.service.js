@@ -15,15 +15,24 @@ class OrderService {
     for (const item of data) {
       const name = nameFormat(item.name)
       const product = await models.Product.findOne({ where: { name } })
-
+      if (item.lab && typeof item.lab !== 'number') {
+        const name = nameFormat(item.lab)
+        const newLab = await models.Lab.create({
+          name
+        })
+        item.lab = newLab.id
+      }
       /* If the product the user passed doesn't exist, we create it with some defualts values  */
       if (!product) {
         const newProduct = await models.Product.create({
           name,
-          price: 0.1,
-          stock: item.amount,
-          labId: 1,
-          expiration: item.expiration
+          price: Number(item.salePrice),
+          stock: Number(item.amount),
+          codeBar: Number(item.codeBar) || null,
+          ingredients: item.ingredients,
+          labId: item.lab,
+          expiration: item.expiration,
+          description: item.description
         })
         item.productId = newProduct.id
         await models.ProductProvider.create({
@@ -92,6 +101,7 @@ class OrderService {
         expiration: product.expiration,
         totalPrice: element.totalPrice
       })
+      console.log('element')
     }
     delete order['provider.id']
     delete order['provider.email']
@@ -130,7 +140,7 @@ class OrderService {
       total
     })
 
-    await this.addItem(data.items, order.id, data.proverId)
+    await this.addItem(data.items, order.id, data.providerId)
 
     return `Orden numero ${order.id} agregado exitosamente!`
   }
@@ -166,8 +176,8 @@ class OrderService {
   }
 
   // Orders-Products service
-  async addItem (items, orderId) {
-    const product = await this.productExist(items, orderId)
+  async addItem (items, orderId, providerId) {
+    const product = await this.productExist(items, orderId, providerId)
     // inserting a bulk of products at once depends on how many products do we want to add
     await models.OrderProduct.bulkCreate(product)
   }

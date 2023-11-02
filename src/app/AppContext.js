@@ -9,6 +9,7 @@ function AppProvider (props) {
   const [individualInfo, setIndividualInfo] = useState({}) // State to set The individual infomation (product, order, provider)
   const [displayedInfo, setDisplayedInfo] = useState([]) // State to set the rows wheter the user inputs a search or not
   const [form, setForm] = useState({}) // Set the form object to send the information to the backend
+  const [extendedItem, setExtendedItem] = useState([]) // Set the form object to send the information to the backend
   const [confirmation, setConfirmation] = useState('') // State used to set the delete or update confirmation message
   const [formState, setFormState] = useState({
     // State use to set the loading screen after a form is send to the backend
@@ -42,6 +43,8 @@ function AppProvider (props) {
         setDisplayedInfo,
         form,
         setForm,
+        extendedItem,
+        setExtendedItem,
         confirmation,
         setConfirmation,
         formState,

@@ -1,14 +1,14 @@
-const Joi = require('joi');
+const Joi = require('joi')
 
-const id = Joi.number().positive().required();
-const name = Joi.string().min(2).required();
+const id = Joi.number().positive().required()
+const name = Joi.string().min(2).required()
 
 const getLabSchema = Joi.object({
-    id
+  id
 })
 
 const labSchema = Joi.object({
-    name
+  name
 })
 
 module.exports = { getLabSchema, labSchema }

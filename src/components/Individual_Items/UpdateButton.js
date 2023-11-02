@@ -2,13 +2,14 @@ import { useContext } from 'react'
 import { AppContext } from '../../app/AppContext'
 
 function UpdateButton ({ setModal }) {
-  const { currentSection } = useContext(AppContext)
+  const { currentSection, setConfirmation } = useContext(AppContext)
 
   function openModal () {
     setModal({
       showModal: true,
       modalType: 'update'
     })
+    setConfirmation(false)
   }
   return (
     <button

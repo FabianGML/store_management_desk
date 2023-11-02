@@ -3,16 +3,18 @@ import { AppContext } from '../../../app/AppContext'
 import FormButton from '../../Buttons/FormButton'
 import LoadingSpinner from '../../GeneralComponents/LoadingSpinner'
 import FormSelect from './../FormSelect'
-import InputLabel from '../InputLabel'
-import useSetFormIfData from '../../hooks/useSetFormIfData'
-import useGetSelectData from '../../hooks/useGetSelectData'
 import FormSearch from '../FormSearch'
+import InputLabel from '../InputLabel'
+import useInputHandlers from '../../hooks/useInputHandlers'
+import useGetSelectData from '../../hooks/useGetSelectData'
+import FormTextArea from '../FormTextArea'
+import ErrorMessage from '../ErrorMessage'
 
 function OrderForm ({ submitInfo, data }) {
-  const { form, setForm, formState } = useContext(AppContext)
+  const { form, setForm, formState, extendedItem } = useContext(AppContext)
   const { primaryOptions, secondaryOptions } = useGetSelectData()
   const primOptions = primaryOptions('primarySelectData')
-  const secondOptions = secondaryOptions()
+  const { secondarySelectOptions, thirdSelectOptions } = secondaryOptions()
   /*
   ---------------------------------------------------
   CustomHook to handle the submit and items change, add and remove
@@ -24,7 +26,7 @@ function OrderForm ({ submitInfo, data }) {
     handleRemoveItem,
     setComplexFormData,
     isLoaded
-  } = useSetFormIfData(data, 'items')
+  } = useInputHandlers(data, 'items')
 
   setComplexFormData(
     data
@@ -42,6 +44,7 @@ function OrderForm ({ submitInfo, data }) {
       items: []
     }
     , submitInfo)
+
   // -----------------------------------------------------
   return (
     <form
@@ -52,7 +55,8 @@ function OrderForm ({ submitInfo, data }) {
         <>
           <div className='flex flex-wrap '>
             <div>
-              <label>Proveedor</label>
+              {formState.validationErrors && formState.validationErrors.includes('providerId') && <ErrorMessage text='El proveedor es obligatorio' />}
+              <label>*Proveedor:</label>
               <FormSelect name='providerId' options={primOptions} />
             </div>
             <div className='mx-10 p-5 flex flex-col border border-stone-600 rounded-lg'>
@@ -66,70 +70,138 @@ function OrderForm ({ submitInfo, data }) {
                   setForm({ ...form, isPayed: event.target.checked })}
               />
             </div>
-            <InputLabel
-              text='Fecha de Llegada'
-              name='orderArrive'
-              type='date'
-              specialChange={(event) =>
-                setForm({ ...form, orderArrive: event.target.value })}
-            />
+            <div>
+              <InputLabel
+                text='*Fecha de Llegada:'
+                name='orderArrive'
+                type='date'
+                required
+              />
+            </div>
 
             <h3 className='basis-full'>Artículos:</h3>
 
             {form.items.map((item, index) => (
-              <Fragment key={index}>
-                <div className='flex gap-10 items-center' key={index}>
-                  <div
-                    className='flex flex-wrap justify-center border border-gray-400 rounded-lg mb-6'
-                  >
-                    <div className='p-3 flex flex-col w-80'>
-                      <label>Nombre:</label>
-                      <FormSearch name='name' options={secondOptions} itemName='items' index={index} item={item} />
-                    </div>
-                    <div>
-                      <label>Precio Unitario: </label>
-                      <input
-                        id={`unitPrice-${index}`}
-                        name='unitPrice'
-                        type='number'
-                        min='0'
-                        value={item.unitPrice}
-                        className='h-12 border border-black m-5 pl-3'
-                        onChange={(event) => handleInputChange(event, index)}
-                      />
-                    </div>
-                    <div>
-                      <label>Cantidad:</label>
-                      <input
-                        id={`amount-${index}`}
-                        name='amount'
-                        type='number'
-                        min='0'
-                        value={item.amount}
-                        className='h-12 border border-black m-5 pl-3'
-                        onChange={(event) => handleInputChange(event, index)}
-                      />
-                    </div>
-                    <div>
-                      <label>Fecha de Caducidad:</label>
-                      <input
-                        id={`expiration-${index}`}
-                        name='expiration'
-                        type='date'
-                        value={item.expiration}
-                        className='h-12 border border-black m-5 pl-3'
-                        onChange={(event) => handleInputChange(event, index)}
-                      />
-                    </div>
+              <div className='flex gap-10 items-center' key={index}>
+                <div
+                  className='flex flex-wrap justify-center border border-gray-400 rounded-lg mb-6 px-6'
+                >
+                  <div className='p-3 flex flex-col w-72'>
+                    {formState.validationErrors && formState.validationErrors.includes('name') && <ErrorMessage text='El nombre del producto es obligatorio' />}
+                    <label>*Nombre del producto a agregar:</label>
+                    <FormSearch
+                      name='name'
+                      options={secondarySelectOptions}
+                      itemName='items'
+                      index={index}
+                      item={item}
+                      extendedItemSchema={{
+                        salePrice: '',
+                        codeBar: '',
+                        ingredients: '',
+                        expiration: '',
+                        image: '',
+                        lab: '',
+                        description: ''
+                      }}
+                    />
                   </div>
-                  <div
-                    className='w-16 h-6 rounded-full mb-6 bg-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-400 hover:text-gray-700 cursor-pointer'
-                    onClick={() => handleRemoveItem(index)}
-                  >
-                    <span className='text-2xl font-bold leading-none'>-</span>
-                  </div>
+                  <InputLabel
+                    text='*Precio Unitario'
+                    name='unitPrice'
+                    type='number'
+                    placeHolder='$67...'
+                    specialChange={(event) => handleInputChange(event, index)}
+                    index={index}
+                    required
+                  />
+                  <InputLabel
+                    text='*Cantidad'
+                    name='amount'
+                    type='number'
+                    placeHolder='5'
+                    specialChange={(event) => handleInputChange(event, index)}
+                    index={index}
+                    required
+                  />
+                  <InputLabel
+                    text='*Caducidad'
+                    name='expiration'
+                    type='date'
+                    specialChange={(event) => handleInputChange(event, index)}
+                    index={index}
+                    required
+                  />
+                  {extendedItem.includes(index) && (
+                    <>
+                      <InputLabel
+                        text='*Precio de venta:'
+                        name='salePrice'
+                        type='number'
+                        specialChange={(event) => handleInputChange(event, index)}
+                        index={index}
+                        required
+                      />
+                      <InputLabel
+                        text='Codigo de Barras:'
+                        name='codeBar'
+                        type='number'
+                        placeHolder='087952345'
+                        specialChange={(event) => handleInputChange(event, index)}
+                        index={index}
+                      />
+                      <InputLabel
+                        text='Ingredientes:'
+                        name='ingredients'
+                        type='text'
+                        placeHolder='Manzanilla, Equinacea...'
+                        specialChange={(event) => handleInputChange(event, index)}
+                        index={index}
+                      />
+                      <div className='flex gap-5 items-center m-5'>
+                        <label>Imagen:</label>
+                        <input
+                          name='image'
+                          type='file'
+                          className='w-72'
+                          onChange={(e) => {
+                            const file = e.target.files[0]
+                            setForm({
+                              ...form,
+                              image: {
+                                name: file.name,
+                                path: file.path,
+                                type: file.type
+                              }
+                            })
+                          }}
+                        />
+                      </div>
+                      <div>
+                        {formState.validationErrors && formState.validationErrors.includes('lab') && <ErrorMessage text='El Laboratorio es obligatorio' />}
+                        <div className='w-72'>
+                          <label>*Laboratorio:</label>
+                          <FormSearch
+                            name='lab'
+                            options={thirdSelectOptions}
+                            itemName='items'
+                            index={index}
+                            item={item}
+                            lab
+                          />
+                        </div>
+                      </div>
+                      <FormTextArea handleChange={(event) => handleInputChange(event, index)} />
+                    </>
+                  )}
                 </div>
-              </Fragment>
+                <div
+                  className='w-16 h-6 rounded-full mb-6 bg-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-400 hover:text-gray-700 cursor-pointer'
+                  onClick={() => handleRemoveItem(index)}
+                >
+                  <span className='text-2xl font-bold leading-none'>-</span>
+                </div>
+              </div>
             ))}
           </div>
           <div

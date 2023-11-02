@@ -18,7 +18,7 @@ class SaleService {
 
     const currentDay = currentDate.getDay()
     const startOfWeek = new Date(currentDate)
-    startOfWeek.setDate(currentDate.getDate() - currentDay + (currentDay === 0 ? -6 : 1))
+    startOfWeek.setDate(currentDate.getDate() - currentDay + (currentDay === 0 ? -6 : 0))
 
     const endOfWeek = new Date(currentDate)
     endOfWeek.setDate(currentDate.getDate() - currentDay + (currentDay === 0 ? 0 : 6))
@@ -49,12 +49,10 @@ class SaleService {
     const prices = []
     const items = []
     for (const item of data) {
-      console.log('item---------------', item)
       const product = await models.Product.findByPk(item.productId)
       if (product) {
         item.TotalUnit = item.total
         item.saleId = sale.id
-        console.log('item.total-----------', item.total)
         prices.push(item.total)
         items.push(item)
         await models.Product.update({
@@ -63,7 +61,6 @@ class SaleService {
         }, { where: { id: item.productId } })
       }
     }
-    console.log('items-----------', items)
     await models.SaleProduct.bulkCreate(items)
     const total = prices.reduce((prevValue, currentValue) => prevValue + currentValue, 0)
     console.log(total)
