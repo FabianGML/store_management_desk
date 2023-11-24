@@ -1,5 +1,5 @@
 function nameFormat (name) {
-  name = name[0].toUpperCase() + name.substring(1).toLowerCase().trimEnd().trimStart()
+  name = name.toLowerCase().trimEnd().trimStart()
   return name
 }
 

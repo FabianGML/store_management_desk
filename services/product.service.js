@@ -1,6 +1,7 @@
 const boom = require('@hapi/boom')
 const path = require('path')
 const fs = require('fs')
+const { Op } = require('sequelize')
 
 const { models } = require('./../libs/sequelize')
 const nameFormat = require('./helpers/nameFormat')
@@ -38,12 +39,28 @@ class ProductService {
     return newName
   }
 
-  async getAllProducts () {
-    const products = await models.Product.findAll({
-      include: ['lab'],
-      order: ['stock'],
-      raw: true
-    })
+  async getAllProducts ({ inputValue }) {
+    let products = []
+    if (!inputValue.length) {
+      products = await models.Product.findAll({
+        include: ['lab'],
+        order: ['stock'],
+        raw: true
+      })
+      console.log('products--------->', products)
+    } else {
+      inputValue = inputValue.toLowerCase()
+      products = await models.Product.findAll({
+        include: ['lab'],
+        order: ['stock'],
+        raw: true,
+        where: {
+          name: {
+            [Op.like]: `%${inputValue}%`
+          }
+        }
+      })
+    }
     const providers = await models.ProductProvider.findAll({
       raw: true,
       include: ['provider']
@@ -82,24 +99,41 @@ class ProductService {
 
   async createProduct (data) {
     const name = nameFormat(data.name)
+    let newProduct
     /*
-    if there is an image, we store it in ./images and change the file name
+    if there is an image, we store it in /src/images and change the file name
     to the product name
     */
     if (data.image) {
       this.imagePath = this.handleImage(data.image, name)
     }
-    const newProduct = await models.Product.create({
-      ...data,
-      image: this.imagePath,
-      name
-    })
+    if (typeof data.labId === 'string') {
+      const lab = await models.Lab.findOne({ where: { name: data.labId }, raw: true })
+      let newLab
+      if (!lab) {
+        newLab = await models.Lab.create({ name: data.labId })
+      }
+      newProduct = await models.Product.create({
+        ...data,
+        labId: newLab.id,
+        image: this.imagePath,
+        name
+      })
+    } else {
+      newProduct = await models.Product.create({
+        ...data,
+        image: this.imagePath,
+        name
+      })
+    }
     return `¡Producto ${newProduct.name} agregado correctamente`
   }
 
   async updateProduct (id, data) {
     const name = nameFormat(data.name)
     const product = await this.getOneProduct(id)
+    const lab = await models.Lab.findOne({ where: { name: data.labId }, raw: true })
+    data.labId = lab.id
     if (data.image) {
       this.imagePath = this.handleImage(data.image, name)
     }

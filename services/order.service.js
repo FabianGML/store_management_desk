@@ -178,7 +178,8 @@ class OrderService {
   // Orders-Products service
   async addItem (items, orderId, providerId) {
     const product = await this.productExist(items, orderId, providerId)
-    // inserting a bulk of products at once depends on how many products do we want to add
+    // inserting a bulk of products at once regardless on how many products do we want to add
+    console.log(product)
     await models.OrderProduct.bulkCreate(product)
   }
 

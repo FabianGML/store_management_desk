@@ -58,12 +58,12 @@ const schemas = {
   Proveedores: createProviderSchema
 }
 
-async function getInfo (event, section) {
+async function getInfo (event, section, inputValue) {
   try {
     const serviceData = services[section]
     if (serviceData) {
       const { service, method } = serviceData[Object.keys(serviceData)[0]]
-      return await service[method]()
+      return await service[method]({ inputValue })
     } else {
       return null
     }
@@ -90,33 +90,26 @@ async function sendPrimarySelectData (event, section) {
 async function createNewEntrance (event, section, data) {
   try {
     const serviceData = services[section]
-    if (serviceData) {
-      const { error } = schemas[section].validate(data, { abortEarly: false })
-      if (error) {
-        console.log(error)
-        const errors = error.details.map(obj => {
-          if (obj.path[0] === 'items') {
-            const matchResult = obj.message.match(/\.([^."'\s]+)/)
-            let wordInsideQuotes
-            console.log('matchResult---------', matchResult)
-            if (matchResult && matchResult.length >= 2) {
-              wordInsideQuotes = matchResult[1]
-            }
-            return wordInsideQuotes
-          } else {
-            return obj.path[0]
-          }
-        })
-        return {
-          validationErrors: errors
+    if (!serviceData) return null
+    const { error } = schemas[section].validate(data, { abortEarly: false })
+    if (error) {
+      console.log(error)
+      const errors = error.details.map(obj => {
+        if (obj.path[0] !== 'items') return obj.path[0]
+        const matchResult = obj.message.match(/\.([^."'\s]+)/)
+        let wordInsideQuotes
+        console.log('matchResult---------', matchResult)
+        if (matchResult && matchResult.length >= 2) {
+          wordInsideQuotes = matchResult[1]
         }
-      } else {
-        const { service, method } = serviceData[Object.keys(serviceData)[2]]
-        return await service[method](data)
+        return wordInsideQuotes
+      })
+      return {
+        validationErrors: errors
       }
-    } else {
-      return null
     }
+    const { service, method } = serviceData[Object.keys(serviceData)[2]]
+    return await service[method](data)
   } catch (error) {
     console.error(error)
   }
@@ -169,7 +162,7 @@ async function updateEntrance (event, section, id, data) {
           validationErrors: errors
         }
       } else {
-        const { service, method } = serviceData[Object.keys(serviceData)[2]]
+        const { service, method } = serviceData[Object.keys(serviceData)[5]]
         return await service[method](id, data)
       }
     } else {
@@ -274,8 +267,8 @@ async function addProducts (event, id) {
 
 function mainWindow () {
   const mainWin = new BrowserWindow({
-    width: 1000,
-    height: 800,
+    minWidth: 1200,
+    minHeight: 800,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
