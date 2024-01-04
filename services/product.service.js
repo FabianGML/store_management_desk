@@ -47,7 +47,6 @@ class ProductService {
         order: ['stock'],
         raw: true
       })
-      console.log('products--------->', products)
     } else {
       inputValue = inputValue.toLowerCase()
       products = await models.Product.findAll({
