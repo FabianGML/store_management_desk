@@ -21,7 +21,7 @@ function Modal ({ currentSection, setModal, productForm, orderForm, providerForm
         onClick={closeModal}
       />
       <p className='w-11/12 text-lg font-semibold'>*Campos Obligatorios</p>
-      <form className='flex flex-col gap-6 items-center w-full h-3/4 mt-10'>
+      <form className='flex flex-col gap-6 items-center w-full h-3/4 mt-10' onSubmit={handleSubmit}>
         {currentSection === 'Productos' &&
         productForm()}
         {currentSection === 'Pedidos' &&
@@ -32,7 +32,7 @@ function Modal ({ currentSection, setModal, productForm, orderForm, providerForm
         labForm()}
         <div>
           {!loading && (
-            <FormButton text='Enviar' handleSubmit={handleSubmit} />
+            <FormButton text='Enviar' />
           )}
           {loading && (
             <LoadingSpinner />

@@ -1,17 +1,10 @@
-import { useContext } from 'react'
-import { AppContext } from '../../app/AppContext'
 import Select from 'react-select'
 
-export default function FormSelect ({ name, options, classes }) {
-  const { form, setForm } = useContext(AppContext)
-
-  function handleSelectInfo (e) {
-    setForm({
-      ...form,
-      [name]: e.value
-    })
-  }
+export default function FormSelect ({ name, options, classes, labelText }) {
   return (
-    <Select options={options} onChange={handleSelectInfo} className={classes} />
+    <div className='w-full max-w-[22rem] flex flex-col gap-4'>
+      <label>{labelText}</label>
+      <Select name={name} options={options} className={classes} />
+    </div>
   )
 }
