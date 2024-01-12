@@ -136,7 +136,7 @@ class OrderService {
     const order = await models.Order.create({
       providerId: data.providerId,
       orderArrive: data.orderArrive,
-      isPayed: data.isPayed,
+      isPayed: data.isPayed || false,
       total
     })
 

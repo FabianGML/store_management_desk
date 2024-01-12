@@ -1,6 +1,6 @@
 import formInputs from '../../../helpers/formInputs'
 import FormSearch from '../FormSearch'
-import InputLabel from '../InputLabe'
+import InputLabel from '../InputLabel'
 import TextArea from '../TextArea'
 import useGetSelectFormData from '../../../hooks/useGetSelectFormData'
 import { useContext } from 'react'
@@ -26,7 +26,7 @@ export default function ProductForm () {
         />
       ))}
 
-      <div className='col-span-2 flex justify-center items-center'>
+      <div className='flex justify-center items-center'>
         <label>Imagen:</label>
         <input
           name='image'
@@ -34,7 +34,7 @@ export default function ProductForm () {
           className='w-72'
         />
       </div>
-      <FormSearch name='labId' options={options} text='Laboratorio' lab />
+      <FormSearch name='labId' options={options} text='Laboratorio' />
       <TextArea name='description' />
     </div>
   )
