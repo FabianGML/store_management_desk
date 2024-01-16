@@ -13,13 +13,11 @@ class OrderService {
   async productExist (data, orderId, providerId) {
     const items = []
     for (const item of data) {
-      const name = nameFormat(item.name)
+      const name = nameFormat(item.productName)
       const product = await models.Product.findOne({ where: { name } })
       if (item.lab && typeof item.lab !== 'number') {
         const name = nameFormat(item.lab)
-        const newLab = await models.Lab.create({
-          name
-        })
+        const newLab = await models.Lab.create({ name })
         item.lab = newLab.id
       }
       /* If the product the user passed doesn't exist, we create it with some defualts values  */
@@ -139,9 +137,7 @@ class OrderService {
       isPayed: data.isPayed || false,
       total
     })
-
-    await this.addItem(data.items, order.id, data.providerId)
-
+    if (data.items) await this.addItem(data.items, order.id, data.providerId)
     return `Orden numero ${order.id} agregado exitosamente!`
   }
 
@@ -200,7 +196,7 @@ class OrderService {
         Checking if the name passed by the body and the name in the db matches
     -----------------------------------------------------------------------------
     */
-    const name = nameFormat(itemData.name)
+    const name = nameFormat(itemData.productName)
 
     /* If the name passed by the user is different, we need to remove the incoming amount to the product stock  */
     if (name !== product.dataValues.name.trim()) {

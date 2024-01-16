@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import getRowContents from '../helpers/rowContents'
 import Row from '../components/Row'
 import Modal from '../Modal/Modal'
 import ProductForm from '../components/Form/sectionsForms/ProductForm'
-// import { AppContext } from '../app/AppContext'
+import { AppContext } from '../app/AppContext'
 import OrderForm from '../components/Form/sectionsForms/OrderForm'
+import ProviderForm from '../components/Form/sectionsForms/ProviderForm'
+import LabForm from '../components/Form/sectionsForms/LabForm'
 
 export default function AdminPage ({ modal, setModal }) {
-  // const { setLoading } = useContext(AppContext)
+  const { setLoading } = useContext(AppContext)
   const [rows, setRows] = useState([[], []])
   const [info, setInfo] = useState([])
   const [inputValue, setInputValue] = useState('')
@@ -28,10 +30,11 @@ export default function AdminPage ({ modal, setModal }) {
     e.preventDefault()
     const formData = new FormData(e.target)
     const data = Object.fromEntries(formData)
+    let resultObject
     // transform items names such as name0, name1, name2 into an array of objects
     // grouping them by their number
     if (currentSection !== 'Productos') {
-      const resultObject = Object.entries(data).reduce((acc, [key, value]) => {
+      resultObject = Object.entries(data).reduce((acc, [key, value]) => {
         const match = key.match(/(\D+)(\d+)/)
         if (match) {
           const [, property, index] = match
@@ -45,15 +48,16 @@ export default function AdminPage ({ modal, setModal }) {
       }, {})
       // remove empty items (this is because "index" is not sequential)
       resultObject.items = Object.values(resultObject.items || {})
-
-      console.log(resultObject)
     }
-    // const response = await window.Data.createEntrance(currentSection, form)
-    // if (response && !response.validationErrors) {
-    //   setModal(false)
-    //   setLoading(false)
-    //   setForm({})
-    // }
+    console.log('data ->', typeof data)
+    console.log('resultObject ->', typeof resultObject)
+    const clonedData = resultObject ? JSON.parse(JSON.stringify(resultObject)) : JSON.parse(JSON.stringify(data))
+    const response = await window.Data.createEntrance(currentSection, clonedData)
+    console.log('response', response)
+    if (response && !response.validationErrors) {
+      setModal(false)
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -100,6 +104,8 @@ export default function AdminPage ({ modal, setModal }) {
           handleSubmit={handleSubmit}
           productForm={() => <ProductForm />}
           orderForm={() => <OrderForm />}
+          providerForm={() => <ProviderForm />}
+          labForm={() => <LabForm />}
         />
       )}
     </main>

@@ -1,8 +1,9 @@
-import { useContext, useEffect } from 'react'
-import { AppContext } from '../app/AppContext'
+import { useState, useEffect } from 'react'
 
 export default function useGetSelectFormData (section) {
-  const { setOptions, setProducts, setThirdOption } = useContext(AppContext)
+  const [options, setOptions] = useState([])
+  const [products, setProducts] = useState([])
+  const [thirdOption, setThirdOption] = useState([])
 
   const getPrimarySelectData = () => {
     useEffect(() => {
@@ -17,6 +18,7 @@ export default function useGetSelectFormData (section) {
           setOptions(options)
         })
     }, [])
+    return options
   }
 
   const getProductsSelectData = () => {
@@ -25,13 +27,14 @@ export default function useGetSelectFormData (section) {
         .then(res => {
           const options = res.map(item => {
             return {
-              value: item.name,
+              value: item.id,
               label: item.name
             }
           })
           setProducts(options)
         })
     }, [])
+    return products
   }
 
   const getThirdSelectData = () => {
@@ -47,6 +50,7 @@ export default function useGetSelectFormData (section) {
           setThirdOption(options)
         })
     }, [])
+    return thirdOption
   }
   return { getPrimarySelectData, getProductsSelectData, getThirdSelectData }
 }

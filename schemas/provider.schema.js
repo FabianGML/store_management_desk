@@ -2,19 +2,19 @@ const Joi = require('joi')
 
 const name = Joi.string().required()
 const email = Joi.string().email().allow('')
-const phone = Joi.string().min(8).allow('')
+const phone = Joi.string().regex(/^[0-9]+$/).min(8).allow('')
 const providerId = Joi.number().positive().required()
 const labProviderId = Joi.number().positive().required()
 
 const id = Joi.number().positive().when('codeBar', { not: Joi.exist(), then: Joi.required() })
 const productName = Joi.string().required()
+const salePrice = Joi.number().positive().when('codeBar', { is: Joi.exist(), then: Joi.required() })
 const amount = Joi.number().positive().when('codeBar', { is: Joi.exist(), then: Joi.required() })
-const price = Joi.number().positive().when('codeBar', { is: Joi.exist(), then: Joi.required() })
 const codeBar = Joi.number().positive().allow('')
 const ingredients = Joi.string().allow('')
 const image = Joi.object().allow('')
 const expiration = Joi.date().when('codeBar', { is: Joi.exist(), then: Joi.required() })
-const lab = Joi.alternatives().try(Joi.number().positive(), Joi.string()).when('codeBar', { is: Joi.exist(), then: Joi.required() })
+const lab = Joi.alternatives().try(Joi.number().positive().required(), Joi.string()).when('codeBar', { is: Joi.exist(), then: Joi.required() })
 const description = Joi.string().allow('')
 
 const items = Joi.array().items(Joi.object({
@@ -22,7 +22,7 @@ const items = Joi.array().items(Joi.object({
   productName,
   amount,
   expiration,
-  price,
+  salePrice,
   codeBar,
   ingredients,
   image,

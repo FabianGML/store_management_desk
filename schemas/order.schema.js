@@ -7,7 +7,7 @@ const orderArrive = Joi.date()
 const isPayed = Joi.boolean()
 
 const orderId = Joi.number().positive()
-const name = Joi.string().required()
+const productName = Joi.string().required()
 const unitPrice = Joi.number().positive().required()
 const salePrice = Joi.number().positive().when('codeBar', { is: Joi.exist(), then: Joi.required() })
 const amount = Joi.number().positive().required()
@@ -19,7 +19,7 @@ const lab = Joi.alternatives().try(Joi.number().positive().required(), Joi.strin
 const description = Joi.string().allow('')
 const items = Joi.array().items(Joi.object({
   id,
-  name,
+  productName,
   unitPrice,
   amount,
   expiration,

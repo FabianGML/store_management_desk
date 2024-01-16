@@ -1,14 +1,10 @@
-import { useContext } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { AppContext } from '../../app/AppContext'
 
 export default function SectionButton ({ image, text, setModal }) {
-  const { setForm } = useContext(AppContext)
   const currentSection = useLocation().pathname.slice(1)
   const isActive = currentSection === text ? 'bg-slate-800' : ''
 
   const handleSectionChange = () => {
-    setForm({})
     setModal(false)
   }
 

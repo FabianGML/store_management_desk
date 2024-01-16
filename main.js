@@ -89,28 +89,28 @@ async function sendPrimarySelectData (event, section) {
 
 async function createNewEntrance (event, section, data) {
   try {
-    // const serviceData = services[section]
-    // if (!serviceData) return null
-    // const { error } = schemas[section].validate(data, { abortEarly: false })
-    // if (error) {
-    //   console.log(error)
-    //   const errors = error.details.map(obj => {
-    //     if (obj.path[0] !== 'items') return obj.path[0]
-    //     const matchResult = obj.message.match(/\.([^."'\s]+)/)
-    //     let wordInsideQuotes
-    //     console.log('matchResult---------', matchResult)
-    //     if (matchResult && matchResult.length >= 2) {
-    //       wordInsideQuotes = matchResult[1]
-    //     }
-    //     return wordInsideQuotes
-    //   })
-    //   return {
-    //     validationErrors: errors
-    //   }
-    // }
-    // const { service, method } = serviceData[Object.keys(serviceData)[2]]
-    // return await service[method](data)
-    console.log(data)
+    console.log('data ------------------->', data)
+    const serviceData = services[section]
+    if (!serviceData) return null
+    const { error } = schemas[section].validate(data, { abortEarly: false })
+    if (error) {
+      console.log(error)
+      const errors = error.details.map(obj => {
+        if (obj.path[0] !== 'items') return obj.path[0]
+        const matchResult = obj.message.match(/\.([^."'\s]+)/)
+        let wordInsideQuotes
+        console.log('matchResult---------', matchResult)
+        if (matchResult && matchResult.length >= 2) {
+          wordInsideQuotes = matchResult[1]
+        }
+        return wordInsideQuotes
+      })
+      return {
+        validationErrors: errors
+      }
+    }
+    const { service, method } = serviceData[Object.keys(serviceData)[2]]
+    return await service[method](data)
   } catch (error) {
     console.error(error)
   }
@@ -174,18 +174,6 @@ async function updateEntrance (event, section, id, data) {
   }
 }
 
-async function sendThirdSelectData (event, section, id, data) {
-  try {
-    const serviceData = services[section]
-    if (serviceData) {
-      const { service, method } = serviceData[Object.keys(serviceData)[6]]
-      return await service[method](id, data)
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 async function sendSecondarySelectData (event, section) {
   try {
     if (section === 'Proveedores' || section === 'Pedidos') {
@@ -193,6 +181,18 @@ async function sendSecondarySelectData (event, section) {
       return products
     } else {
       getLabsSelect()
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function sendThirdSelectData (event, section, id, data) {
+  try {
+    const serviceData = services[section]
+    if (serviceData) {
+      const { service, method } = serviceData[Object.keys(serviceData)[6]]
+      return await service[method](id, data)
     }
   } catch (error) {
     console.error(error)

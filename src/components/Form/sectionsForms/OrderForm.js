@@ -1,29 +1,13 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import useGetSelectFormData from '../../../hooks/useGetSelectFormData'
 import FormSelect from '../FormSelect'
-import { AppContext } from '../../../app/AppContext'
 import InputLabel from '../InputLabel'
-import AddItemButton from '../AddItemButton'
-import FormItem from '../FormItem'
 
 export default function OrderForm () {
-  const [items, setItems] = useState([])
-  const [i, setI] = useState(0)
   const [isPayed, setIsPayed] = useState(false)
-  const { options } = useContext(AppContext)
-  const { getPrimarySelectData, getProductsSelectData, getThirdSelectData } = useGetSelectFormData('Pedidos')
-  getPrimarySelectData()
-  getProductsSelectData()
-  getThirdSelectData()
+  const { getPrimarySelectData } = useGetSelectFormData('Pedidos')
+  const options = getPrimarySelectData()
 
-  const addItem = () => {
-    setItems([...items, i])
-    setI(prevI => prevI + 1)
-  }
-
-  const removeItem = (index) => {
-    setItems(items.filter((_, i) => i !== index))
-  }
   return (
     <div className='grid grid-cols-3 gap-5 mx-5 place-items-center'>
       <FormSelect name='providerId' options={options} labelText='*Proveedor' />
@@ -39,8 +23,6 @@ export default function OrderForm () {
       </div>
       <InputLabel labelText='Fecha de llegada:' name='orderArrive' type='date' required />
       <h3 className='col-span-3 '>Artículos:</h3>
-      {items.map(item => (<FormItem key={item} index={items.indexOf(item)} itemNumber={item} removeItem={removeItem} />))}
-      <AddItemButton addItem={addItem} />
     </div>
   )
 }

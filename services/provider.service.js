@@ -86,8 +86,7 @@ class ProviderService {
       email: data.email,
       phone: data.phone
     })
-
-    await this.addProdProv(newProvider.id, data.items)
+    if (data.items) await this.addProdProv(newProvider.id, data.items)
     return `Proveedor ${newProvider.name} agregado correctamente`
   }
 
@@ -195,55 +194,56 @@ class ProviderService {
   async addProdProv (providerId, items) {
     const productsToCreateInBulk = []
     const rawLabsToCreateInBulk = []
+    // searching all labs that belongs to the provider
     const labsProvidersDb = await models.LabProvider.findAll({ where: { providerId }, raw: true })
     const labsProvidersIds = labsProvidersDb.map(row => row.labId)
-    if (items) {
-      for (const item of items) {
-        const { id } = item
-        console.log(item)
-        if (item.lab && typeof item.lab !== 'number') {
-          const name = nameFormat(item.lab)
-          const newLab = await models.Lab.create({ name })
-          item.lab = newLab.id
-        }
-        const dbProduct = await models.Product.findByPk(id, { raw: true })
-        if (dbProduct) {
-          if (!await models.ProductProvider.findOne({ where: { productId: dbProduct.id, providerId } })) {
-            productsToCreateInBulk.push({
-              productId: id,
-              providerId
-            })
-          }
-          if (!rawLabsToCreateInBulk.includes(dbProduct.labId)) {
-            rawLabsToCreateInBulk.push(dbProduct.labId)
-          }
-        } else {
-          const name = nameFormat(item.productName)
-          // eslint-disable-next-line no-var
-          var newProduct = await models.Product.create({
-            name,
-            price: Number(item.price),
-            stock: Number(item.amount),
-            codeBar: Number(item.codeBar) || null,
-            ingredients: item.ingredients,
-            labId: item.lab,
-            description: item.description || '',
-            expiration: item.expiration
-          }, { raw: true })
+    for (const item of items) {
+      const { id } = item
+      if (item.lab && typeof item.lab !== 'number') {
+        const name = nameFormat(item.lab)
+        const newLab = await models.Lab.create({ name })
+        item.lab = newLab.id
+      }
+      const dbProduct = await models.Product.findByPk(id, { raw: true })
+      if (dbProduct) {
+        // if the product exist in the db, we check if the relation between the product and the provider exist
+        // if not, we add it to the array of products to create in bulk
+        if (!await models.ProductProvider.findOne({ where: { productId: dbProduct.id, providerId } })) {
           productsToCreateInBulk.push({
-            productId: newProduct.id,
+            productId: id,
             providerId
           })
-          if (!rawLabsToCreateInBulk.includes(item.lab)) {
-            rawLabsToCreateInBulk.push(item.lab)
-          }
+        }
+        if (!rawLabsToCreateInBulk.includes(dbProduct.labId)) {
+          rawLabsToCreateInBulk.push(dbProduct.labId)
+        }
+      } else {
+        const name = nameFormat(item.productName)
+        // eslint-disable-next-line no-var
+        var newProduct = await models.Product.create({
+          name,
+          price: Number(item.salePrice),
+          stock: Number(item.amount),
+          codeBar: Number(item.codeBar) || null,
+          ingredients: item.ingredients,
+          labId: item.lab,
+          description: item.description || '',
+          expiration: item.expiration
+        }, { raw: true })
+
+        productsToCreateInBulk.push({
+          productId: newProduct.id,
+          providerId
+        })
+        if (!rawLabsToCreateInBulk.includes(item.lab)) {
+          rawLabsToCreateInBulk.push(item.lab)
         }
       }
-      await models.ProductProvider.bulkCreate(productsToCreateInBulk)
-      if (rawLabsToCreateInBulk.length > 0) {
-        const labsToAdd = rawLabsToCreateInBulk.filter(labId => !labsProvidersIds.includes(labId)).map((labId) => { return { labId, providerId } })
-        await models.LabProvider.bulkCreate(labsToAdd)
-      }
+    }
+    await models.ProductProvider.bulkCreate(productsToCreateInBulk)
+    if (rawLabsToCreateInBulk.length > 0) {
+      const labsToAdd = rawLabsToCreateInBulk.filter(labId => !labsProvidersIds.includes(labId)).map((labId) => { return { labId, providerId } })
+      await models.LabProvider.bulkCreate(labsToAdd)
     }
     return newProduct
   }

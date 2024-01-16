@@ -1,12 +1,24 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import ReactDOM from 'react-dom'
 import close from '../svg/close-svgrepo-com.svg'
 import { AppContext } from '../app/AppContext'
 import FormButton from '../components/Form/FormButton'
 import LoadingSpinner from '../components/LoadingSpinner'
+import FormItem from '../components/Form/FormItem'
+import AddItemButton from '../components/Form/AddItemButton'
 
 function Modal ({ currentSection, setModal, productForm, orderForm, providerForm, labForm, handleSubmit }) {
+  const [items, setItems] = useState([])
+  const [i, setI] = useState(0)
   const { loading, setExtendedItems } = useContext(AppContext)
+  const addItem = () => {
+    setItems([...items, i])
+    setI(prevI => prevI + 1)
+  }
+
+  const removeItem = (index) => {
+    setItems(items.filter((_, i) => i !== index))
+  }
 
   const closeModal = () => {
     setModal(false)
@@ -30,6 +42,9 @@ function Modal ({ currentSection, setModal, productForm, orderForm, providerForm
         providerForm()}
         {currentSection === 'Laboratorios' &&
         labForm()}
+
+        {currentSection !== 'Productos' && items.map(item => (<FormItem key={item} index={items.indexOf(item)} itemNumber={item} removeItem={removeItem} />))}
+        {currentSection !== 'Productos' && <AddItemButton addItem={addItem} />}
         {!loading && (
           <FormButton text='Enviar' />
         )}
