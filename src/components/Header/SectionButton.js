@@ -1,11 +1,16 @@
 import { NavLink, useLocation } from 'react-router-dom'
+import { useContext } from 'react'
+import { AppContext } from '../../app/AppContext'
 
 export default function SectionButton ({ image, text, setModal }) {
+  const { setMessage, setValidationErrors } = useContext(AppContext)
   const currentSection = useLocation().pathname.slice(1)
   const isActive = currentSection === text ? 'bg-slate-800' : ''
 
   const handleSectionChange = () => {
     setModal(false)
+    setMessage('')
+    setValidationErrors({})
   }
 
   return (

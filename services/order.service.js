@@ -13,8 +13,8 @@ class OrderService {
   async productExist (data, orderId, providerId) {
     const items = []
     for (const item of data) {
-      const name = nameFormat(item.productName)
-      const product = await models.Product.findOne({ where: { name } })
+      const { id } = item
+      const product = await models.Product.findByPk(id, { raw: true })
       if (item.lab && typeof item.lab !== 'number') {
         const name = nameFormat(item.lab)
         const newLab = await models.Lab.create({ name })
@@ -22,6 +22,7 @@ class OrderService {
       }
       /* If the product the user passed doesn't exist, we create it with some defualts values  */
       if (!product) {
+        const name = nameFormat(item.productName)
         const newProduct = await models.Product.create({
           name,
           price: Number(item.salePrice),
@@ -45,11 +46,11 @@ class OrderService {
           item.expiration > product.expiration
             ? item.expiration
             : product.expiration
-        product.update({
+        await models.Product.update({
           stock: Number(product.stock) + Number(item.amount),
           expiration,
           expiration2: product.expiration
-        })
+        }, { where: { id } })
         item.productId = product.id
       }
       item.orderId = orderId

@@ -10,7 +10,7 @@ export default function OrderForm () {
 
   return (
     <div className='grid grid-cols-3 gap-5 mx-5 place-items-center'>
-      <FormSelect name='providerId' options={options} labelText='*Proveedor' />
+      <FormSelect name='providerId' options={options} labelText='*Proveedor' classes='min-w-[18rem]' required />
       <div className='mx-20 p-5 w-48 flex flex-col items-center border border-stone-600 rounded-lg'>
         <label>¿Esta Pagado?</label>
         <input

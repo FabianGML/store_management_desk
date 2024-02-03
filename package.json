@@ -29,7 +29,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
+    "dev": "concurrently -k \"BROWSER=none npm start\" \"npm run electron\"",
     "electron": "wait-on tcp:3000 && electronmon .",
     "migrations:generate": "sequelize-cli migration:generate --name",
     "migrations:run": "sequelize-cli db:migrate",

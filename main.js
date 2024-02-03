@@ -89,24 +89,33 @@ async function sendPrimarySelectData (event, section) {
 
 async function createNewEntrance (event, section, data) {
   try {
-    console.log('data ------------------->', data)
     const serviceData = services[section]
     if (!serviceData) return null
     const { error } = schemas[section].validate(data, { abortEarly: false })
     if (error) {
       console.log(error)
-      const errors = error.details.map(obj => {
+      // Array of objects with the errors of each item
+      const itemsErrors = []
+      let errors = error.details.map(obj => {
         if (obj.path[0] !== 'items') return obj.path[0]
+        const index = obj.path[1]
         const matchResult = obj.message.match(/\.([^."'\s]+)/)
         let wordInsideQuotes
-        console.log('matchResult---------', matchResult)
         if (matchResult && matchResult.length >= 2) {
           wordInsideQuotes = matchResult[1]
+          // check if index is already created in itemsErrors
+          // if it doesn't, create it and add the word inside quotes
+          // if it does, just add the word inside quotes
+          itemsErrors[index] ? itemsErrors[index].push(wordInsideQuotes) : itemsErrors.push([wordInsideQuotes])
         }
-        return wordInsideQuotes
+        return null
       })
+      errors = errors.filter(error => error !== null)
       return {
-        validationErrors: errors
+        validationErrors: {
+          errors,
+          items: itemsErrors
+        }
       }
     }
     const { service, method } = serviceData[Object.keys(serviceData)[2]]

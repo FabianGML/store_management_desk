@@ -5,6 +5,8 @@ const AppContext = createContext()
 function AppProvider (props) {
   const [loading, setLoading] = useState(false)
   const [extendedItems, setExtendedItems] = useState([])
+  const [message, setMessage] = useState('')
+  const [validationErrors, setValidationErrors] = useState({})
 
   return (
     <AppContext.Provider
@@ -12,7 +14,11 @@ function AppProvider (props) {
         loading,
         setLoading,
         extendedItems,
-        setExtendedItems
+        setExtendedItems,
+        message,
+        setMessage,
+        validationErrors,
+        setValidationErrors
       }}
     >
       {props.children}

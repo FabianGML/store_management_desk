@@ -54,9 +54,23 @@ class ProductService {
         order: ['stock'],
         raw: true,
         where: {
-          name: {
-            [Op.like]: `%${inputValue}%`
-          }
+          [Op.or]: [
+            {
+              name: {
+                [Op.like]: `%${inputValue}%`
+              }
+            },
+            {
+              description: {
+                [Op.like]: `%${inputValue}%`
+              }
+            },
+            {
+              ingredients: {
+                [Op.like]: `%${inputValue}%`
+              }
+            }
+          ]
         }
       })
     }
@@ -103,7 +117,7 @@ class ProductService {
     if there is an image, we store it in /src/images and change the file name
     to the product name
     */
-    if (data.image) {
+    if (data.image.length) {
       this.imagePath = this.handleImage(data.image, name)
     }
     if (typeof data.labId === 'string') {

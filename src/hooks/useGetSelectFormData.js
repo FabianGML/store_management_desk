@@ -42,8 +42,9 @@ export default function useGetSelectFormData (section) {
       window.Data.thirdSelectData(section)
         .then(res => {
           const options = res.map(item => {
+            const id = Number(item.id)
             return {
-              value: item.id,
+              value: id,
               label: item.name
             }
           })

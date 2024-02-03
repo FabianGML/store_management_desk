@@ -3,15 +3,12 @@ import FormSearch from '../FormSearch'
 import InputLabel from '../InputLabel'
 import TextArea from '../TextArea'
 import useGetSelectFormData from '../../../hooks/useGetSelectFormData'
-import { useContext } from 'react'
-import { AppContext } from '../../../app/AppContext'
 
 export default function ProductForm () {
-  const { options } = useContext(AppContext)
   const inputs = formInputs('Productos')
 
   const { getPrimarySelectData } = useGetSelectFormData('Productos')
-  getPrimarySelectData()
+  const options = getPrimarySelectData()
 
   return (
     <div className='grid grid-cols-3 gap-5'>

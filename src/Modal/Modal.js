@@ -10,7 +10,7 @@ import AddItemButton from '../components/Form/AddItemButton'
 function Modal ({ currentSection, setModal, productForm, orderForm, providerForm, labForm, handleSubmit }) {
   const [items, setItems] = useState([])
   const [i, setI] = useState(0)
-  const { loading, setExtendedItems } = useContext(AppContext)
+  const { loading, setExtendedItems, setValidationErrors } = useContext(AppContext)
   const addItem = () => {
     setItems([...items, i])
     setI(prevI => prevI + 1)
@@ -23,6 +23,7 @@ function Modal ({ currentSection, setModal, productForm, orderForm, providerForm
   const closeModal = () => {
     setModal(false)
     setExtendedItems([])
+    setValidationErrors({})
   }
 
   return ReactDOM.createPortal(

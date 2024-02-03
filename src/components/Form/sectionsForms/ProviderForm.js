@@ -16,7 +16,7 @@ export default function ProviderForm () {
         required
       />
       <InputLabel
-        name='providerEmail'
+        name='email'
         type='email'
         labelText='Correo'
         placeholder='proveedor@mail.com'

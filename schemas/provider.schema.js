@@ -7,7 +7,7 @@ const providerId = Joi.number().positive().required()
 const labProviderId = Joi.number().positive().required()
 
 const id = Joi.number().positive().when('codeBar', { not: Joi.exist(), then: Joi.required() })
-const productName = Joi.string().required()
+const productName = Joi.string().when('codeBar', { is: Joi.exist(), then: Joi.required() })
 const salePrice = Joi.number().positive().when('codeBar', { is: Joi.exist(), then: Joi.required() })
 const amount = Joi.number().positive().when('codeBar', { is: Joi.exist(), then: Joi.required() })
 const codeBar = Joi.number().positive().allow('')

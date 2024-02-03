@@ -8,9 +8,10 @@ import { AppContext } from '../app/AppContext'
 import OrderForm from '../components/Form/sectionsForms/OrderForm'
 import ProviderForm from '../components/Form/sectionsForms/ProviderForm'
 import LabForm from '../components/Form/sectionsForms/LabForm'
+import Message from '../components/Message'
 
 export default function AdminPage ({ modal, setModal }) {
-  const { setLoading } = useContext(AppContext)
+  const { setLoading, message, setMessage, setValidationErrors } = useContext(AppContext)
   const [rows, setRows] = useState([[], []])
   const [info, setInfo] = useState([])
   const [inputValue, setInputValue] = useState('')
@@ -26,7 +27,7 @@ export default function AdminPage ({ modal, setModal }) {
   }
 
   const handleSubmit = async (e) => {
-    // setLoading(true)
+    setLoading(true)
     e.preventDefault()
     const formData = new FormData(e.target)
     const data = Object.fromEntries(formData)
@@ -34,6 +35,8 @@ export default function AdminPage ({ modal, setModal }) {
     // transform items names such as name0, name1, name2 into an array of objects
     // grouping them by their number
     if (currentSection !== 'Productos') {
+      // keys that its values should be numbers
+      const keys = ['lab', 'amount', 'id']
       resultObject = Object.entries(data).reduce((acc, [key, value]) => {
         const match = key.match(/(\D+)(\d+)/)
         if (match) {
@@ -41,6 +44,7 @@ export default function AdminPage ({ modal, setModal }) {
           acc.items = acc.items || []
           acc.items[index] = acc.items[index] || {}
           acc.items[index][property] = value
+          if (keys.includes(property) && /^\d+$/.test(value)) acc.items[index][property] = Number(value)
         } else {
           acc[key] = value
         }
@@ -48,14 +52,18 @@ export default function AdminPage ({ modal, setModal }) {
       }, {})
       // remove empty items (this is because "index" is not sequential)
       resultObject.items = Object.values(resultObject.items || {})
+    } else {
+      data.labId = Number(data.labId)
     }
-    console.log('data ->', typeof data)
-    console.log('resultObject ->', typeof resultObject)
     const clonedData = resultObject ? JSON.parse(JSON.stringify(resultObject)) : JSON.parse(JSON.stringify(data))
     const response = await window.Data.createEntrance(currentSection, clonedData)
-    console.log('response', response)
     if (response && !response.validationErrors) {
       setModal(false)
+      setLoading(false)
+      setMessage(response)
+    }
+    if (response && response.validationErrors) {
+      setValidationErrors(response.validationErrors)
       setLoading(false)
     }
   }
@@ -73,6 +81,11 @@ export default function AdminPage ({ modal, setModal }) {
 
   return (
     <main className='mx-6 my-10'>
+      {message && (
+        <div className='w-full flex justify-center mb-10'>
+          <Message text={message} />
+        </div>
+      )}
       <h1 className='text-5xl pb-16 mb-10 border-b border-black'>{currentSection}</h1>
       <div>
         <input onChange={handleInputChange} className='w-3/4 h-14 pl-4 text-lg border border-gray-500 rounded-md outline-none' placeholder={`Buscar ${currentSection}...`} />

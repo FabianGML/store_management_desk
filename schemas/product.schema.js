@@ -4,13 +4,14 @@ const id = Joi.number().positive().required()
 const name = Joi.string()
 const price = Joi.number().positive()
 const stock = Joi.number().positive()
-const barCode = Joi.string()
+const barCode = Joi.string().allow('')
 const ingredients = Joi.string().allow('')
+const image = Joi.object().allow('')
 const labId = Joi.alternatives().try(
   Joi.string(),
   Joi.number()
 )
-const description = Joi.string()
+const description = Joi.string().allow('')
 const expiration = Joi.date().format('YYYY-MM-DD').utc()
 
 // const products = Joi.object({
@@ -29,9 +30,10 @@ const createProductSchema = Joi.object({
   stock: stock.required(),
   barCode,
   ingredients,
+  image,
   labId: labId.required(),
-  description,
-  expiration: expiration.required()
+  expiration: expiration.required(),
+  description
 })
 
 const getProductSchema = Joi.object({

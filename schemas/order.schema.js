@@ -7,7 +7,7 @@ const orderArrive = Joi.date()
 const isPayed = Joi.boolean()
 
 const orderId = Joi.number().positive()
-const productName = Joi.string().required()
+const productName = Joi.string().when('codeBar', { is: Joi.exist(), then: Joi.required() })
 const unitPrice = Joi.number().positive().required()
 const salePrice = Joi.number().positive().when('codeBar', { is: Joi.exist(), then: Joi.required() })
 const amount = Joi.number().positive().required()
